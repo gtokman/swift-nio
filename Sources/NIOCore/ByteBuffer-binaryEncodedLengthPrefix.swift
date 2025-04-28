@@ -63,10 +63,10 @@ public protocol NIOBinaryIntegerEncodingStrategy {
 }
 
 extension NIOBinaryIntegerEncodingStrategy {
-    @inlinable
+    
     public var requiredBytesHint: Int { 1 }
 
-    @inlinable
+    
     public func writeInteger<IntegerType: FixedWidthInteger>(
         _ integer: IntegerType,
         reservedCapacity: Int,
@@ -79,7 +79,7 @@ extension NIOBinaryIntegerEncodingStrategy {
 extension ByteBuffer {
     /// Read a binary encoded integer, moving the `readerIndex` appropriately.
     /// If there are not enough bytes, nil is returned.
-    @inlinable
+    
     public mutating func readEncodedInteger<Strategy: NIOBinaryIntegerEncodingStrategy, Integer: FixedWidthInteger>(
         as: Integer.Type = Integer.self,
         strategy: Strategy
@@ -91,7 +91,7 @@ extension ByteBuffer {
     ///
     /// - Returns: The number of bytes written.
     @discardableResult
-    @inlinable
+    
     public mutating func writeEncodedInteger<
         Integer: FixedWidthInteger,
         Strategy: NIOBinaryIntegerEncodingStrategy
@@ -115,7 +115,7 @@ extension ByteBuffer {
     ///   - writeData: A closure that takes a buffer, writes some data to it, and returns the number of bytes written.
     /// - Returns: Number of total bytes written. This is the length of the written data + the number of bytes used to write the length before it.
     @discardableResult
-    @inlinable
+    
     public mutating func writeLengthPrefixed<Strategy: NIOBinaryIntegerEncodingStrategy>(
         strategy: Strategy,
         writeData: (_ buffer: inout ByteBuffer) throws -> Int
@@ -193,7 +193,7 @@ extension ByteBuffer {
     /// Reads a slice which is prefixed with a length. The length will be read using `strategy`, and then that many bytes will be read to create a slice.
     /// - Returns: The slice, if there are enough bytes to read it fully. In this case, the readerIndex will move to after the slice.
     /// If there are not enough bytes to read the full slice, the readerIndex will stay unchanged.
-    @inlinable
+    
     public mutating func readLengthPrefixedSlice<Strategy: NIOBinaryIntegerEncodingStrategy>(
         strategy: Strategy
     ) -> ByteBuffer? {
@@ -216,7 +216,7 @@ extension ByteBuffer {
     ///   - strategy: The encoding strategy to use.
     /// - Returns: The total bytes written. This is the bytes needed to write the length, plus the length of the buffer itself.
     @discardableResult
-    @inlinable
+    
     public mutating func writeLengthPrefixedBuffer<
         Strategy: NIOBinaryIntegerEncodingStrategy
     >(
@@ -236,7 +236,7 @@ extension ByteBuffer {
     ///  - strategy: The encoding strategy to use.
     /// - Returns: The total bytes written. This is the bytes needed to write the length, plus the length of the string itself.
     @discardableResult
-    @inlinable
+    
     public mutating func writeLengthPrefixedString<
         Strategy: NIOBinaryIntegerEncodingStrategy
     >(
@@ -258,7 +258,7 @@ extension ByteBuffer {
     ///  - strategy: The encoding strategy to use.
     /// - Returns: The total bytes written. This is the bytes needed to write the length, plus the length of the bytes themselves.
     @discardableResult
-    @inlinable
+    
     public mutating func writeLengthPrefixedBytes<
         Bytes: Sequence,
         Strategy: NIOBinaryIntegerEncodingStrategy
@@ -290,7 +290,7 @@ extension ByteBuffer {
     /// [a, b, c, d, 0, 0, e, f, g, h, i, j]
     /// 2 extra bytes of space were created before index 4 (the letter e).
     /// The total bytes written will be equal to `requiredSpace`, and the writer index will be moved accordingly.
-    @usableFromInline
+    
     mutating func _createSpace(before index: Int, requiredSpace: Int) {
         precondition(index >= self.readerIndex)
         let bytesToMove = self.writerIndex - index
@@ -304,7 +304,7 @@ extension ByteBuffer {
 
     /// Move the `size` bytes starting from `source` to `destination`.
     /// `source` and `destination` must both be within the writable range.
-    @usableFromInline
+    
     mutating func _moveBytes(from source: Int, to destination: Int, size: Int) {
         precondition(source >= self.readerIndex && destination < self.writerIndex && source >= destination)
         precondition(source + size <= self.writerIndex)

@@ -415,7 +415,7 @@ public final class EmbeddedEventLoop: EventLoop, CustomStringConvertible {
 // ultimately we can't have the compiler validating this usage.
 extension EmbeddedEventLoop: @unchecked Sendable {}
 
-@usableFromInline
+
 class EmbeddedChannelCore: ChannelCore {
     var isOpen: Bool {
         get {
@@ -471,35 +471,35 @@ class EmbeddedChannelCore: ChannelCore {
     }
 
     /// Contains the flushed items that went into the `Channel` (and on a regular channel would have hit the network).
-    @usableFromInline
+    
     var outboundBuffer: CircularBuffer<NIOAny> = CircularBuffer()
 
     /// Contains observers that want to consume the first element that would be appended to the `outboundBuffer`
-    @usableFromInline
+    
     var outboundBufferConsumer: Deque<(NIOAny) -> Void> = []
 
     /// Contains the unflushed items that went into the `Channel`
-    @usableFromInline
+    
     var pendingOutboundBuffer: MarkedCircularBuffer<(NIOAny, EventLoopPromise<Void>?)> = MarkedCircularBuffer(
         initialCapacity: 16
     )
 
     /// Contains the items that travelled the `ChannelPipeline` all the way and hit the tail channel handler. On a
     /// regular `Channel` these items would be lost.
-    @usableFromInline
+    
     var inboundBuffer: CircularBuffer<NIOAny> = CircularBuffer()
 
     /// Contains observers that want to consume the first element that would be appended to the `inboundBuffer`
-    @usableFromInline
+    
     var inboundBufferConsumer: Deque<(NIOAny) -> Void> = []
 
-    @usableFromInline
+    
     var localAddress: SocketAddress?
 
-    @usableFromInline
+    
     var remoteAddress: SocketAddress?
 
-    @usableFromInline
+    
     func localAddress0() throws -> SocketAddress {
         self.eventLoop.preconditionInEventLoop()
         if let localAddress = self.localAddress {
@@ -509,7 +509,7 @@ class EmbeddedChannelCore: ChannelCore {
         }
     }
 
-    @usableFromInline
+    
     func remoteAddress0() throws -> SocketAddress {
         self.eventLoop.preconditionInEventLoop()
         if let remoteAddress = self.remoteAddress {
@@ -519,7 +519,7 @@ class EmbeddedChannelCore: ChannelCore {
         }
     }
 
-    @usableFromInline
+    
     func close0(error: Error, mode: CloseMode, promise: EventLoopPromise<Void>?) {
         self.eventLoop.preconditionInEventLoop()
         guard self.isOpen else {
@@ -544,13 +544,13 @@ class EmbeddedChannelCore: ChannelCore {
         }
     }
 
-    @usableFromInline
+    
     func bind0(to address: SocketAddress, promise: EventLoopPromise<Void>?) {
         self.eventLoop.preconditionInEventLoop()
         promise?.succeed(())
     }
 
-    @usableFromInline
+    
     func connect0(to address: SocketAddress, promise: EventLoopPromise<Void>?) {
         self.eventLoop.preconditionInEventLoop()
         isActive = true
@@ -558,14 +558,14 @@ class EmbeddedChannelCore: ChannelCore {
         self.pipeline.syncOperations.fireChannelActive()
     }
 
-    @usableFromInline
+    
     func register0(promise: EventLoopPromise<Void>?) {
         self.eventLoop.preconditionInEventLoop()
         promise?.succeed(())
         self.pipeline.syncOperations.fireChannelRegistered()
     }
 
-    @usableFromInline
+    
     func registerAlreadyConfigured0(promise: EventLoopPromise<Void>?) {
         self.eventLoop.preconditionInEventLoop()
         isActive = true
@@ -573,13 +573,13 @@ class EmbeddedChannelCore: ChannelCore {
         self.pipeline.syncOperations.fireChannelActive()
     }
 
-    @usableFromInline
+    
     func write0(_ data: NIOAny, promise: EventLoopPromise<Void>?) {
         self.eventLoop.preconditionInEventLoop()
         self.pendingOutboundBuffer.append((data, promise))
     }
 
-    @usableFromInline
+    
     func flush0() {
         self.eventLoop.preconditionInEventLoop()
         self.pendingOutboundBuffer.mark()
@@ -594,7 +594,7 @@ class EmbeddedChannelCore: ChannelCore {
         }
     }
 
-    @usableFromInline
+    
     func read0() {
         self.eventLoop.preconditionInEventLoop()
         // NOOP
@@ -605,7 +605,7 @@ class EmbeddedChannelCore: ChannelCore {
         promise?.fail(ChannelError.operationUnsupported)
     }
 
-    @usableFromInline
+    
     func channelRead0(_ data: NIOAny) {
         self.eventLoop.preconditionInEventLoop()
         self.addToBuffer(
@@ -767,7 +767,7 @@ public final class EmbeddedChannel: Channel {
     /// - see: `Channel.closeFuture`
     public var closeFuture: EventLoopFuture<Void> { channelcore.closePromise.futureResult }
 
-    @usableFromInline
+    
     lazy var channelcore: EmbeddedChannelCore = EmbeddedChannelCore(
         pipeline: self._pipeline,
         eventLoop: self.eventLoop
@@ -890,7 +890,7 @@ public final class EmbeddedChannel: Channel {
     /// - Note: Outbound events travel the `ChannelPipeline` _back to front_.
     /// - Note: `EmbeddedChannel.writeOutbound` will `write` data through the `ChannelPipeline`, starting with last
     ///         `ChannelHandler`.
-    @inlinable
+    
     public func readOutbound<T>(as type: T.Type = T.self) throws -> T? {
         self.embeddedEventLoop.checkCorrectThread()
         return try _readFromBuffer(buffer: &channelcore.outboundBuffer)
@@ -906,7 +906,7 @@ public final class EmbeddedChannel: Channel {
     /// `ChannelHandlerContext.fireChannelRead`) or implicitly by not implementing `channelRead`.
     ///
     /// - Note: `EmbeddedChannel.writeInbound` will fire data through the `ChannelPipeline` using `fireChannelRead`.
-    @inlinable
+    
     public func readInbound<T>(as type: T.Type = T.self) throws -> T? {
         self.embeddedEventLoop.checkCorrectThread()
         return try _readFromBuffer(buffer: &channelcore.inboundBuffer)
@@ -921,7 +921,7 @@ public final class EmbeddedChannel: Channel {
     ///    - data: The data to fire through the pipeline.
     /// - Returns: The state of the inbound buffer which contains all the events that travelled the `ChannelPipeline`
     //             all the way.
-    @inlinable
+    
     @discardableResult public func writeInbound<T>(_ data: T) throws -> BufferState {
         self.embeddedEventLoop.checkCorrectThread()
         self.pipeline.syncOperations.fireChannelRead(NIOAny(data))
@@ -940,7 +940,7 @@ public final class EmbeddedChannel: Channel {
     ///    - data: The data to fire through the pipeline.
     /// - Returns: The state of the outbound buffer which contains all the events that travelled the `ChannelPipeline`
     //             all the way.
-    @inlinable
+    
     @discardableResult public func writeOutbound<T>(_ data: T) throws -> BufferState {
         self.embeddedEventLoop.checkCorrectThread()
         try self.writeAndFlush(data).wait()
@@ -958,7 +958,7 @@ public final class EmbeddedChannel: Channel {
         }
     }
 
-    @inlinable
+    
     func _readFromBuffer<T>(buffer: inout CircularBuffer<NIOAny>) throws -> T? {
         self.embeddedEventLoop.checkCorrectThread()
         if buffer.isEmpty {
@@ -1006,14 +1006,14 @@ public final class EmbeddedChannel: Channel {
     }
 
     /// - see: `Channel.setOption`
-    @inlinable
+    
     public func setOption<Option: ChannelOption>(_ option: Option, value: Option.Value) -> EventLoopFuture<Void> {
         self.embeddedEventLoop.checkCorrectThread()
         self.setOptionSync(option, value: value)
         return self.eventLoop.makeSucceededVoidFuture()
     }
 
-    @inlinable
+    
     internal func setOptionSync<Option: ChannelOption>(_ option: Option, value: Option.Value) {
         self.embeddedEventLoop.checkCorrectThread()
         if option is ChannelOptions.Types.AllowRemoteHalfClosureOption {
@@ -1025,13 +1025,13 @@ public final class EmbeddedChannel: Channel {
     }
 
     /// - see: `Channel.getOption`
-    @inlinable
+    
     public func getOption<Option: ChannelOption>(_ option: Option) -> EventLoopFuture<Option.Value> {
         self.embeddedEventLoop.checkCorrectThread()
         return self.eventLoop.makeSucceededFuture(self.getOptionSync(option))
     }
 
-    @inlinable
+    
     internal func getOptionSync<Option: ChannelOption>(_ option: Option) -> Option.Value {
         self.embeddedEventLoop.checkCorrectThread()
         if option is ChannelOptions.Types.AutoReadOption {
@@ -1083,7 +1083,7 @@ public final class EmbeddedChannel: Channel {
 
     /// An overload of `Channel.write` that does not require a Sendable type, as ``EmbeddedEventLoop``
     /// is bound to a single thread.
-    @inlinable
+    
     public func write<T>(_ data: T, promise: EventLoopPromise<Void>?) {
         self.embeddedEventLoop.checkCorrectThread()
         self.pipeline.syncOperations.write(NIOAny(data), promise: promise)
@@ -1091,7 +1091,7 @@ public final class EmbeddedChannel: Channel {
 
     /// An overload of `Channel.write` that does not require a Sendable type, as ``EmbeddedEventLoop``
     /// is bound to a single thread.
-    @inlinable
+    
     public func write<T>(_ data: T) -> EventLoopFuture<Void> {
         self.embeddedEventLoop.checkCorrectThread()
         let promise = self.eventLoop.makePromise(of: Void.self)
@@ -1101,7 +1101,7 @@ public final class EmbeddedChannel: Channel {
 
     /// An overload of `Channel.writeAndFlush` that does not require a Sendable type, as ``EmbeddedEventLoop``
     /// is bound to a single thread.
-    @inlinable
+    
     public func writeAndFlush<T>(_ data: T, promise: EventLoopPromise<Void>?) {
         self.embeddedEventLoop.checkCorrectThread()
         self.pipeline.syncOperations.writeAndFlush(NIOAny(data), promise: promise)
@@ -1109,7 +1109,7 @@ public final class EmbeddedChannel: Channel {
 
     /// An overload of `Channel.writeAndFlush` that does not require a Sendable type, as ``EmbeddedEventLoop``
     /// is bound to a single thread.
-    @inlinable
+    
     public func writeAndFlush<T>(_ data: T) -> EventLoopFuture<Void> {
         self.embeddedEventLoop.checkCorrectThread()
         let promise = self.eventLoop.makePromise(of: Void.self)
@@ -1120,19 +1120,19 @@ public final class EmbeddedChannel: Channel {
 
 extension EmbeddedChannel {
     public struct SynchronousOptions: NIOSynchronousChannelOptions {
-        @usableFromInline
+        
         internal let channel: EmbeddedChannel
 
         fileprivate init(channel: EmbeddedChannel) {
             self.channel = channel
         }
 
-        @inlinable
+        
         public func setOption<Option: ChannelOption>(_ option: Option, value: Option.Value) throws {
             self.channel.setOptionSync(option, value: value)
         }
 
-        @inlinable
+        
         public func getOption<Option: ChannelOption>(_ option: Option) throws -> Option.Value {
             self.channel.getOptionSync(option)
         }

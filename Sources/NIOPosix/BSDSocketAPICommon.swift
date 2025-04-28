@@ -31,7 +31,7 @@ protocol _SocketShutdownProtocol {
     var cValue: CInt { get }
 }
 
-@usableFromInline
+
 internal enum Shutdown: _SocketShutdownProtocol, Sendable {
     case RD
     case WR
@@ -48,7 +48,7 @@ extension NIOBSDSocket {
 
 extension NIOBSDSocket {
     /// Specifies the type of socket.
-    @usableFromInline
+    
     internal struct SocketType: RawRepresentable, Sendable {
         public typealias RawValue = CInt
         public var rawValue: RawValue

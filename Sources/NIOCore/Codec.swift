@@ -237,12 +237,12 @@ extension ByteToMessageDecoder {
         return buffer.storageCapacity > 1024 && (buffer.storageCapacity - buffer.readerIndex) < buffer.readerIndex
     }
 
-    @inlinable
+    
     public func wrapInboundOut(_ value: InboundOut) -> NIOAny {
         NIOAny(value)
     }
 
-    @inlinable
+    
     public static func wrapInboundOut(_ value: InboundOut) -> NIOAny {
         NIOAny(value)
     }

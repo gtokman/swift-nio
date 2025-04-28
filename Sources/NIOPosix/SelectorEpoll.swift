@@ -81,7 +81,7 @@ extension SelectorEventSet {
         return filter
     }
 
-    @inlinable
+    
     internal init(epollEvent: Epoll.epoll_event) {
         var selectorEventSet: SelectorEventSet = ._none
         if epollEvent.events & Epoll.EPOLLIN != 0 {
@@ -105,24 +105,24 @@ extension SelectorEventSet {
 
 // EPollUserData supports (un)packing into an `UInt64` because epoll has a user info field that we can attach which is
 // up to 64 bits wide. We're using all of those 64 bits, 32 for a "registration ID" and 32 for the file descriptor.
-@usableFromInline struct EPollUserData {
-    @usableFromInline var registrationID: SelectorRegistrationID
-    @usableFromInline var fileDescriptor: CInt
+ struct EPollUserData {
+     var registrationID: SelectorRegistrationID
+     var fileDescriptor: CInt
 
-    @inlinable init(registrationID: SelectorRegistrationID, fileDescriptor: CInt) {
+     init(registrationID: SelectorRegistrationID, fileDescriptor: CInt) {
         assert(MemoryLayout<UInt64>.size == MemoryLayout<EPollUserData>.size)
         self.registrationID = registrationID
         self.fileDescriptor = fileDescriptor
     }
 
-    @inlinable init(rawValue: UInt64) {
+     init(rawValue: UInt64) {
         let unpacked = IntegerBitPacking.unpackUInt32CInt(rawValue)
         self = .init(registrationID: SelectorRegistrationID(rawValue: unpacked.0), fileDescriptor: unpacked.1)
     }
 }
 
 extension UInt64 {
-    @inlinable
+    
     init(_ epollUserData: EPollUserData) {
         let fd = epollUserData.fileDescriptor
         assert(fd >= 0, "\(fd) is not a valid file descriptor")
@@ -210,7 +210,7 @@ extension Selector: _SelectorBackendProtocol {
     /// - Parameters:
     ///   - strategy: The `SelectorStrategy` to apply
     ///   - body: The function to execute for each `SelectorEvent` that was produced.
-    @inlinable
+    
     func whenReady0(
         strategy: SelectorStrategy,
         onLoopBegin loopStart: () -> Void,

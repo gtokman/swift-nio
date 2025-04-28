@@ -15,12 +15,12 @@
 import NIOCore
 
 extension UInt8 {
-    @usableFromInline
+    
     internal func isAnyBitSetInMask(_ mask: UInt8) -> Bool {
         self & mask != 0
     }
 
-    @usableFromInline
+    
     internal mutating func changingBitsInMask(_ mask: UInt8, to: Bool) {
         if to {
             self |= mask
@@ -37,7 +37,7 @@ extension UInt8 {
 /// a more convenient method of interacting with a masking key than simply by passing
 /// around a four-tuple.
 public struct WebSocketMaskingKey: Sendable {
-    @usableFromInline internal let _key: (UInt8, UInt8, UInt8, UInt8)
+     internal let _key: (UInt8, UInt8, UInt8, UInt8)
 
     public init?<T: Collection>(_ buffer: T) where T.Element == UInt8 {
         guard buffer.count == 4 else {
@@ -58,7 +58,7 @@ public struct WebSocketMaskingKey: Sendable {
     /// - Parameters:
     ///   - integer: The encoded network representation of the
     ///         masking key.
-    @usableFromInline
+    
     internal init(networkRepresentation integer: UInt32) {
         self._key = (
             UInt8((integer & 0xFF00_0000) >> 24),
@@ -83,7 +83,7 @@ extension WebSocketMaskingKey {
     /// - Parameter generator: The random number generator to use when creating the
     ///     new random masking key.
     /// - Returns: A random masking key
-    @inlinable
+    
     public static func random<Generator>(
         using generator: inout Generator
     ) -> WebSocketMaskingKey where Generator: RandomNumberGenerator {
@@ -92,7 +92,7 @@ extension WebSocketMaskingKey {
 
     /// Returns a random masking key, using the `SystemRandomNumberGenerator` as a source for randomness.
     /// - Returns: A random masking key
-    @inlinable
+    
     public static func random() -> WebSocketMaskingKey {
         var generator = SystemRandomNumberGenerator()
         return .random(using: &generator)
@@ -131,7 +131,7 @@ extension WebSocketMaskingKey: Collection {
         }
     }
 
-    @inlinable
+    
     public func withContiguousStorageIfAvailable<R>(_ body: (UnsafeBufferPointer<UInt8>) throws -> R) rethrows -> R? {
         try withUnsafeBytes(of: self._key) { ptr in
             // this is boilerplate necessary to convert from UnsafeRawBufferPointer to UnsafeBufferPointer<UInt8>
@@ -161,13 +161,13 @@ public struct WebSocketFrame {
     /// Rather than unpack all the fields from the first byte, and thus take up loads
     /// of storage in the structure, we keep them in their packed form in this byte and
     /// use computed properties to unpack them.
-    @usableFromInline
+    
     internal var firstByte: UInt8 = 0
 
     /// The value of the `fin` bit. If set, this is the last frame in a fragmented frame. If not
     /// set, this frame is one of the intermediate frames in a fragmented frame. Must be set if
     /// a frame is not fragmented at all.
-    @inlinable
+    
     public var fin: Bool {
         get {
             self.firstByte.isAnyBitSetInMask(0x80)
@@ -178,7 +178,7 @@ public struct WebSocketFrame {
     }
 
     /// The value of the first reserved bit. Must be `false` unless using an extension that defines its use.
-    @inlinable
+    
     public var rsv1: Bool {
         get {
             self.firstByte.isAnyBitSetInMask(0x40)
@@ -189,7 +189,7 @@ public struct WebSocketFrame {
     }
 
     /// The value of the second reserved bit. Must be `false` unless using an extension that defines its use.
-    @inlinable
+    
     public var rsv2: Bool {
         get {
             self.firstByte.isAnyBitSetInMask(0x20)
@@ -200,7 +200,7 @@ public struct WebSocketFrame {
     }
 
     /// The value of the third reserved bit. Must be `false` unless using an extension that defines its use.
-    @inlinable
+    
     public var rsv3: Bool {
         get {
             self.firstByte.isAnyBitSetInMask(0x10)
@@ -211,7 +211,7 @@ public struct WebSocketFrame {
     }
 
     /// The opcode for this frame.
-    @inlinable
+    
     public var opcode: WebSocketOpcode {
         get {
             // this is a public initialiser which only fails if the opcode is invalid. But all opcodes in 0...0xF
@@ -224,7 +224,7 @@ public struct WebSocketFrame {
     }
 
     /// The total length of the data in the frame.
-    @inlinable
+    
     public var length: Int {
         data.readableBytes + (extensionData?.readableBytes ?? 0)
     }
@@ -421,23 +421,23 @@ extension WebSocketFrame {
     public struct ReservedBits: OptionSet, Sendable {
         public var rawValue: UInt8
 
-        @inlinable
+        
         public init(rawValue: UInt8) {
             self.rawValue = rawValue
         }
 
-        @inlinable
+        
         public static var rsv1: Self { .init(rawValue: 0x40) }
-        @inlinable
+        
         public static var rsv2: Self { .init(rawValue: 0x20) }
-        @inlinable
+        
         public static var rsv3: Self { .init(rawValue: 0x10) }
-        @inlinable
+        
         public static var all: Self { .init(rawValue: 0x70) }
     }
 
     /// The value of all the reserved bits. Must be `empty` unless using an extension that defines their use.
-    @inlinable
+    
     public var reservedBits: ReservedBits {
         get {
             .init(rawValue: self.firstByte & 0x70)

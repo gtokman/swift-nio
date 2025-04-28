@@ -185,7 +185,7 @@ public typealias NIOLinger = linger
 //
 // Please note that to work around a Swift compiler issue regarding lookup of the Sendability of
 // libc types across modules, the actual calls to `unsafeSetSocketOption` and `unsafeGetSocketOption`
-// _must_ be made inside non-`public` non-`@inlinable` methods. Otherwise we'll produce crashes
+// _must_ be made inside non-`public` non-`` methods. Otherwise we'll produce crashes
 // in release mode. NIO's integration tests are a good canary for this: if you call your method
 // from an alloc counter test in the integration tests, it'll crash if you messed it up.
 extension SocketOptionProvider {

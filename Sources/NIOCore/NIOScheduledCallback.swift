@@ -41,7 +41,7 @@ extension NIOScheduledCallbackHandler {
 ///
 /// - Seealso: `EventLoop.scheduleCallback(at:handler:)`.
 public struct NIOScheduledCallback: Sendable {
-    @usableFromInline
+    
     enum Backing: Sendable {
         /// A task created using `EventLoop.scheduleTask(deadline:_:)` by the default implementation.
         case `default`(_ task: Scheduled<Void>)
@@ -49,10 +49,10 @@ public struct NIOScheduledCallback: Sendable {
         case custom(id: UInt64)
     }
 
-    @usableFromInline
+    
     var eventLoop: any EventLoop
 
-    @usableFromInline
+    
     var backing: Backing
 
     /// This initializer is only for the default implementation and is fileprivate to avoid use in EL implementations.
@@ -66,14 +66,14 @@ public struct NIOScheduledCallback: Sendable {
     /// - NOTE: This initializer is for event loop implementors only, end users should use `EventLoop.scheduleCallback`.
     ///
     /// - Seealso: `EventLoop.scheduleCallback(at:handler:)`.
-    @inlinable
+    
     public init(_ eventLoop: any EventLoop, id: UInt64) {
         self.eventLoop = eventLoop
         self.backing = .custom(id: id)
     }
 
     /// Cancel the scheduled callback associated with this handle.
-    @inlinable
+    
     public func cancel() {
         self.eventLoop.cancelScheduledCallback(self)
     }
@@ -81,7 +81,7 @@ public struct NIOScheduledCallback: Sendable {
     /// The callback identifier, if the event loop uses a custom scheduled callback implementation; nil otherwise.
     ///
     /// - NOTE: This property is for event loop implementors only.
-    @inlinable
+    
     public var customCallbackID: UInt64? {
         guard case .custom(let id) = self.backing else { return nil }
         return id
@@ -147,7 +147,7 @@ extension EventLoop {
     /// Default implementation of `scheduleCallback(in amount:handler:)`: calls `scheduleCallback(at deadline:handler:)`.
     @preconcurrency
     @discardableResult
-    @inlinable
+    
     public func scheduleCallback(
         in amount: TimeAmount,
         handler: some (NIOScheduledCallbackHandler & Sendable)
@@ -160,7 +160,7 @@ extension EventLoop {
     /// - NOTE: Event loops that provide a custom scheduled callback implementation **must** implement _both_
     ///         `sheduleCallback(at deadline:handler:)` _and_ `cancelScheduledCallback(_:)`. Failure to do so will
     ///         result in a runtime error.
-    @inlinable
+    
     public func cancelScheduledCallback(_ scheduledCallback: NIOScheduledCallback) {
         switch scheduledCallback.backing {
         case .default(let task):

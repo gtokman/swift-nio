@@ -13,7 +13,7 @@
 //===----------------------------------------------------------------------===//
 
 extension String {
-    @inlinable
+    
     init(
         backportUnsafeUninitializedCapacity capacity: Int,
         initializingUTF8With initializer: (_ buffer: UnsafeMutableBufferPointer<UInt8>) throws -> Int
@@ -39,7 +39,7 @@ extension String {
 // to newer Xcodes does work, we can save ourselves some hassle and just wait until 5.4 to get this
 // enhancement on Apple platforms.
 extension String {
-    @inlinable
+    
     init(
         customUnsafeUninitializedCapacity capacity: Int,
         initializingUTF8With initializer: (

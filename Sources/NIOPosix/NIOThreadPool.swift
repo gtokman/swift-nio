@@ -63,16 +63,16 @@ public final class NIOThreadPool {
     /// The work that should be done by the `NIOThreadPool`.
     public typealias WorkItem = @Sendable (WorkItemState) -> Void
 
-    @usableFromInline
+    
     struct IdentifiableWorkItem: Sendable {
-        @usableFromInline
+        
         var workItem: WorkItem
 
-        @usableFromInline
+        
         var id: Int?
     }
 
-    @usableFromInline
+    
     internal enum State: Sendable {
         /// The `NIOThreadPool` is already stopped.
         case stopped
@@ -86,7 +86,7 @@ public final class NIOThreadPool {
     }
 
     /// Whether threads in the pool have work.
-    @usableFromInline
+    
     internal enum _WorkState: Hashable, Sendable {
         case hasWork
         case hasNoWork
@@ -99,10 +99,10 @@ public final class NIOThreadPool {
     // to wait for a given value. The value indicates whether the thread has some work to do. Work
     // in this case can be either processing a work item or exiting the threads processing
     // loop (i.e. shutting down).
-    @usableFromInline
+    
     internal let _conditionLock: ConditionLock<_WorkState>
     private var threads: [NIOThread]? = nil  // protected by `conditionLock`
-    @usableFromInline
+    
     internal var _state: State = .stopped
 
     // WorkItems don't have a handle so they can't be cancelled directly. Instead an ID is assigned
@@ -121,7 +121,7 @@ public final class NIOThreadPool {
     // be removed.
     //
     // Note: protected by 'lock'.
-    @usableFromInline
+    
     internal var _cancelledWorkIDs: Set<Int> = []
     private let nextWorkID = ManagedAtomic(0)
 
@@ -252,7 +252,7 @@ public final class NIOThreadPool {
     //
     // This function is one of those and giving it a consistent name makes it much easier to remove from the profiles
     // when only interested in on-CPU work.
-    @inlinable
+    
     internal func _blockingWaitForWork(identifier: Int) -> (item: WorkItem, state: WorkItemState)? {
         self._conditionLock.withLock(when: .hasWork) {
             () -> (unlockWith: _WorkState, result: (WorkItem, WorkItemState)?) in
@@ -485,7 +485,7 @@ extension NIOThreadPool {
 
     /// Shuts down the thread pool gracefully.
     @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
-    @inlinable
+    
     public func shutdownGracefully() async throws {
         try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Void, Error>) in
             self.shutdownGracefully { error in
@@ -526,7 +526,7 @@ extension NIOThreadPool {
 }
 
 extension ConditionLock {
-    @inlinable
+    
     func _lock(when value: T?) {
         if let value = value {
             self.lock(whenValue: value)
@@ -535,7 +535,7 @@ extension ConditionLock {
         }
     }
 
-    @inlinable
+    
     func _unlock(with value: T?) {
         if let value = value {
             self.unlock(withValue: value)
@@ -544,7 +544,7 @@ extension ConditionLock {
         }
     }
 
-    @inlinable
+    
     func withLock<Result>(when value: T? = nil, _ body: () -> (unlockWith: T?, result: Result)) -> Result {
         self._lock(when: value)
         let (unlockValue, result) = body()

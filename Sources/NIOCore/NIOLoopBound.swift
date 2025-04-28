@@ -33,11 +33,11 @@ public struct NIOLoopBound<Value>: @unchecked Sendable {
         self.eventLoop
     }
 
-    @usableFromInline
+    
     var _value: Value
 
     /// Initialise a ``NIOLoopBound`` to `value` with the precondition that the code is running on `eventLoop`.
-    @inlinable
+    
     public init(_ value: Value, eventLoop: EventLoop) {
         eventLoop.preconditionInEventLoop()
         self.eventLoop = eventLoop
@@ -47,7 +47,7 @@ public struct NIOLoopBound<Value>: @unchecked Sendable {
     /// Access the `value` with the precondition that the code is running on `eventLoop`.
     ///
     /// - Note: ``NIOLoopBound`` itself is value-typed, so any writes will only affect the current value.
-    @inlinable
+    
     public var value: Value {
         get {
             self.eventLoop.preconditionInEventLoop()
@@ -86,17 +86,17 @@ public final class NIOLoopBoundBox<Value>: @unchecked Sendable {
         self.eventLoop
     }
 
-    @usableFromInline
+    
     var _value: Value
 
-    @inlinable
+    
     internal init(_value value: Value, uncheckedEventLoop eventLoop: EventLoop) {
         self.eventLoop = eventLoop
         self._value = value
     }
 
     /// Initialise a ``NIOLoopBoundBox`` to `value` with the precondition that the code is running on `eventLoop`.
-    @inlinable
+    
     public convenience init(_ value: Value, eventLoop: EventLoop) {
         // This precondition is absolutely required. If not, it were possible to take a non-Sendable `Value` from
         // _off_ the ``EventLoop`` and transport it _to_ the ``EventLoop``. That would be illegal.
@@ -164,7 +164,7 @@ public final class NIOLoopBoundBox<Value>: @unchecked Sendable {
     /// Access the `value` with the precondition that the code is running on `eventLoop`.
     ///
     /// - Note: ``NIOLoopBoundBox`` itself is reference-typed, so any writes will affect anybody sharing this reference.
-    @inlinable
+    
     public var value: Value {
         get {
             self.eventLoop.preconditionInEventLoop()

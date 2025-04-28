@@ -32,11 +32,11 @@ import CNIOLinux
 /// A `Scheduled` allows the user to either `cancel()` the execution of the scheduled task (if possible) or obtain a reference to the `EventLoopFuture` that
 /// will be notified once the execution is complete.
 public struct Scheduled<T> {
-    @usableFromInline typealias CancelationCallback = @Sendable () -> Void
-    @usableFromInline let _promise: EventLoopPromise<T>
-    @usableFromInline let _cancellationTask: CancelationCallback
+     typealias CancelationCallback = @Sendable () -> Void
+     let _promise: EventLoopPromise<T>
+     let _cancellationTask: CancelationCallback
 
-    @inlinable
+    
     @preconcurrency
     public init(promise: EventLoopPromise<T>, cancellationTask: @escaping @Sendable () -> Void) {
         self._promise = promise
@@ -47,14 +47,14 @@ public struct Scheduled<T> {
     ///
     /// Whether this is successful depends on whether the execution of the task already begun.
     ///  This means that cancellation is not guaranteed.
-    @inlinable
+    
     public func cancel() {
         self._promise.fail(EventLoopError._cancelled)
         self._cancellationTask()
     }
 
     /// Returns the `EventLoopFuture` which will be notified once the execution of the scheduled task completes.
-    @inlinable
+    
     public var futureResult: EventLoopFuture<T> {
         self._promise.futureResult
     }
@@ -487,7 +487,7 @@ extension EventLoop {
     }
 
     /// Default implementation: wraps the task in an UnsafeTransfer.
-    @inlinable
+    
     public func _executeIsolatedUnsafeUnchecked(_ task: @escaping () -> Void) {
         self.assertInEventLoop()
         let unsafeTransfer = UnsafeTransfer(task)
@@ -497,7 +497,7 @@ extension EventLoop {
     }
 
     /// Default implementation: wraps the task in an UnsafeTransfer.
-    @inlinable
+    
     public func _submitIsolatedUnsafeUnchecked<T>(_ task: @escaping () throws -> T) -> EventLoopFuture<T> {
         self.assertInEventLoop()
         let unsafeTransfer = UnsafeTransfer(task)
@@ -507,7 +507,7 @@ extension EventLoop {
     }
 
     /// Default implementation: wraps the task in an UnsafeTransfer.
-    @inlinable
+    
     @discardableResult
     public func _scheduleTaskIsolatedUnsafeUnchecked<T>(
         deadline: NIODeadline,
@@ -521,7 +521,7 @@ extension EventLoop {
     }
 
     /// Default implementation: wraps the task in an UnsafeTransfer.
-    @inlinable
+    
     @discardableResult
     public func _scheduleTaskIsolatedUnsafeUnchecked<T>(
         in delay: TimeAmount,
@@ -541,7 +541,7 @@ extension EventLoop {
         NIODefaultSerialEventLoopExecutor(self)
     }
 
-    @inlinable
+    
     @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
     public func enqueue(_ job: consuming ExecutorJob) {
         // By default we are just going to use execute to run the job
@@ -570,7 +570,7 @@ public struct TimeAmount: Hashable, Sendable {
     /// The nanoseconds representation of the `TimeAmount`.
     public let nanoseconds: Int64
 
-    @inlinable
+    
     init(_ nanoseconds: Int64) {
         self.nanoseconds = nanoseconds
     }
@@ -580,7 +580,7 @@ public struct TimeAmount: Hashable, Sendable {
     /// - Parameters:
     ///   - amount: the amount of nanoseconds this `TimeAmount` represents.
     /// - Returns: the `TimeAmount` for the given amount.
-    @inlinable
+    
     public static func nanoseconds(_ amount: Int64) -> TimeAmount {
         TimeAmount(amount)
     }
@@ -592,7 +592,7 @@ public struct TimeAmount: Hashable, Sendable {
     /// - Returns: the `TimeAmount` for the given amount.
     ///
     /// - Note: returns `TimeAmount(.max)` if the amount overflows when converted to nanoseconds and `TimeAmount(.min)` if it underflows.
-    @inlinable
+    
     public static func microseconds(_ amount: Int64) -> TimeAmount {
         TimeAmount(_cappedNanoseconds(amount: amount, multiplier: 1000))
     }
@@ -604,7 +604,7 @@ public struct TimeAmount: Hashable, Sendable {
     /// - Returns: the `TimeAmount` for the given amount.
     ///
     /// - Note: returns `TimeAmount(.max)` if the amount overflows when converted to nanoseconds and `TimeAmount(.min)` if it underflows.
-    @inlinable
+    
     public static func milliseconds(_ amount: Int64) -> TimeAmount {
         TimeAmount(_cappedNanoseconds(amount: amount, multiplier: 1000 * 1000))
     }
@@ -616,7 +616,7 @@ public struct TimeAmount: Hashable, Sendable {
     /// - Returns: the `TimeAmount` for the given amount.
     ///
     /// - Note: returns `TimeAmount(.max)` if the amount overflows when converted to nanoseconds and `TimeAmount(.min)` if it underflows.
-    @inlinable
+    
     public static func seconds(_ amount: Int64) -> TimeAmount {
         TimeAmount(_cappedNanoseconds(amount: amount, multiplier: 1000 * 1000 * 1000))
     }
@@ -628,7 +628,7 @@ public struct TimeAmount: Hashable, Sendable {
     /// - Returns: the `TimeAmount` for the given amount.
     ///
     /// - Note: returns `TimeAmount(.max)` if the amount overflows when converted to nanoseconds and `TimeAmount(.min)` if it underflows.
-    @inlinable
+    
     public static func minutes(_ amount: Int64) -> TimeAmount {
         TimeAmount(_cappedNanoseconds(amount: amount, multiplier: 1000 * 1000 * 1000 * 60))
     }
@@ -640,7 +640,7 @@ public struct TimeAmount: Hashable, Sendable {
     /// - Returns: the `TimeAmount` for the given amount.
     ///
     /// - Note: returns `TimeAmount(.max)` if the amount overflows when converted to nanoseconds and `TimeAmount(.min)` if it underflows.
-    @inlinable
+    
     public static func hours(_ amount: Int64) -> TimeAmount {
         TimeAmount(_cappedNanoseconds(amount: amount, multiplier: 1000 * 1000 * 1000 * 60 * 60))
     }
@@ -651,7 +651,7 @@ public struct TimeAmount: Hashable, Sendable {
     ///   - amount: the amount to be converted to nanoseconds.
     ///   - multiplier: the multiplier that converts the given amount to nanoseconds.
     ///  - returns: the amount converted to nanoseconds within [Int64.min, Int64.max].
-    @inlinable
+    
     static func _cappedNanoseconds(amount: Int64, multiplier: Int64) -> Int64 {
         let nanosecondsMultiplication = amount.multipliedReportingOverflow(by: multiplier)
         if nanosecondsMultiplication.overflow {
@@ -745,7 +745,7 @@ extension TimeAmount: CustomStringConvertible {
 }
 
 extension TimeAmount: Comparable {
-    @inlinable
+    
     public static func < (lhs: TimeAmount, rhs: TimeAmount) -> Bool {
         lhs.nanoseconds < rhs.nanoseconds
     }
@@ -753,37 +753,37 @@ extension TimeAmount: Comparable {
 
 extension TimeAmount: AdditiveArithmetic {
     /// The zero value for `TimeAmount`.
-    @inlinable
+    
     public static var zero: TimeAmount {
         TimeAmount.nanoseconds(0)
     }
 
-    @inlinable
+    
     public static func + (lhs: TimeAmount, rhs: TimeAmount) -> TimeAmount {
         TimeAmount(lhs.nanoseconds + rhs.nanoseconds)
     }
 
-    @inlinable
+    
     public static func += (lhs: inout TimeAmount, rhs: TimeAmount) {
         lhs = lhs + rhs
     }
 
-    @inlinable
+    
     public static func - (lhs: TimeAmount, rhs: TimeAmount) -> TimeAmount {
         TimeAmount(lhs.nanoseconds - rhs.nanoseconds)
     }
 
-    @inlinable
+    
     public static func -= (lhs: inout TimeAmount, rhs: TimeAmount) {
         lhs = lhs - rhs
     }
 
-    @inlinable
+    
     public static func * <T: BinaryInteger>(lhs: T, rhs: TimeAmount) -> TimeAmount {
         TimeAmount(Int64(lhs) * rhs.nanoseconds)
     }
 
-    @inlinable
+    
     public static func * <T: BinaryInteger>(lhs: TimeAmount, rhs: T) -> TimeAmount {
         TimeAmount(lhs.nanoseconds * Int64(rhs))
     }
@@ -811,14 +811,14 @@ public struct NIODeadline: Equatable, Hashable, Sendable {
     public typealias Value = UInt64
 
     // This really should be an UInt63 but we model it as Int64 with >=0 assert
-    @usableFromInline var _uptimeNanoseconds: Int64 {
+     var _uptimeNanoseconds: Int64 {
         didSet {
             assert(self._uptimeNanoseconds >= 0)
         }
     }
 
     /// The nanoseconds since boot representation of the `NIODeadline`.
-    @inlinable
+    
     public var uptimeNanoseconds: UInt64 {
         .init(self._uptimeNanoseconds)
     }
@@ -826,7 +826,7 @@ public struct NIODeadline: Equatable, Hashable, Sendable {
     public static let distantPast = NIODeadline(0)
     public static let distantFuture = NIODeadline(.init(Int64.max))
 
-    @inlinable init(_ nanoseconds: Int64) {
+     init(_ nanoseconds: Int64) {
         precondition(nanoseconds >= 0)
         self._uptimeNanoseconds = nanoseconds
     }
@@ -841,7 +841,7 @@ public struct NIODeadline: Equatable, Hashable, Sendable {
     /// we make that call here, directly from NIO.
     ///
     /// - TODO: Investigate optimizing the call to `DispatchTime.now()` away on other platforms too.
-    @inlinable
+    
     static func timeNow() -> UInt64 {
         #if os(Linux)
         var ts = timespec()
@@ -862,55 +862,55 @@ public struct NIODeadline: Equatable, Hashable, Sendable {
         #endif  // os(Linux)
     }
 
-    @inlinable
+    
     public static func now() -> NIODeadline {
         NIODeadline.uptimeNanoseconds(timeNow())
     }
 
-    @inlinable
+    
     public static func uptimeNanoseconds(_ nanoseconds: UInt64) -> NIODeadline {
         NIODeadline(Int64(min(UInt64(Int64.max), nanoseconds)))
     }
 
-    @inlinable
+    
     public static func == (lhs: NIODeadline, rhs: NIODeadline) -> Bool {
         lhs.uptimeNanoseconds == rhs.uptimeNanoseconds
     }
 
-    @inlinable
+    
     public func hash(into hasher: inout Hasher) {
         hasher.combine(self.uptimeNanoseconds)
     }
 }
 
 extension NIODeadline: Comparable {
-    @inlinable
+    
     public static func < (lhs: NIODeadline, rhs: NIODeadline) -> Bool {
         lhs.uptimeNanoseconds < rhs.uptimeNanoseconds
     }
 
-    @inlinable
+    
     public static func > (lhs: NIODeadline, rhs: NIODeadline) -> Bool {
         lhs.uptimeNanoseconds > rhs.uptimeNanoseconds
     }
 }
 
 extension NIODeadline: CustomStringConvertible {
-    @inlinable
+    
     public var description: String {
         self.uptimeNanoseconds.description
     }
 }
 
 extension NIODeadline {
-    @inlinable
+    
     public static func - (lhs: NIODeadline, rhs: NIODeadline) -> TimeAmount {
         // This won't ever crash, NIODeadlines are guaranteed to be within 0 ..< 2^63-1 nanoseconds so the result can
         // definitely be stored in a TimeAmount (which is an Int64).
         .nanoseconds(Int64(lhs.uptimeNanoseconds) - Int64(rhs.uptimeNanoseconds))
     }
 
-    @inlinable
+    
     public static func + (lhs: NIODeadline, rhs: TimeAmount) -> NIODeadline {
         let partial: Int64
         let overflow: Bool
@@ -925,7 +925,7 @@ extension NIODeadline {
         return NIODeadline(partial)
     }
 
-    @inlinable
+    
     public static func - (lhs: NIODeadline, rhs: TimeAmount) -> NIODeadline {
         if rhs.nanoseconds < 0 {
             // The addition won't crash because the worst that could happen is `UInt64(Int64.max) + UInt64(Int64.max)`
@@ -952,7 +952,7 @@ extension EventLoop {
     /// - Parameters:
     ///   - task: The synchronous task to run. As everything that runs on the `EventLoop`, it must not block.
     /// - Returns: An `EventLoopFuture` containing the result of `task`'s execution.
-    @inlinable
+    
     @preconcurrency
     public func submit<T>(_ task: @escaping @Sendable () throws -> T) -> EventLoopFuture<T> {
         let promise: EventLoopPromise<T> = makePromise(file: #fileID, line: #line)
@@ -977,7 +977,7 @@ extension EventLoop {
     /// - Parameters:
     ///   - task: The asynchronous task to run. As with everything that runs on the `EventLoop`, it must not block.
     /// - Returns: An `EventLoopFuture` identical to the `EventLoopFuture` returned from `task`.
-    @inlinable
+    
     @preconcurrency
     public func flatSubmit<T: Sendable>(_ task: @escaping @Sendable () -> EventLoopFuture<T>) -> EventLoopFuture<T> {
         self.submit(task).flatMap { $0 }
@@ -998,7 +998,7 @@ extension EventLoop {
     ///
     /// - Note: You can only cancel a task before it has started executing.
     @discardableResult
-    @inlinable
+    
     @preconcurrency
     public func flatScheduleTask<T: Sendable>(
         deadline: NIODeadline,
@@ -1036,7 +1036,7 @@ extension EventLoop {
     ///
     /// - Note: You can only cancel a task before it has started executing.
     @discardableResult
-    @inlinable
+    
     @preconcurrency
     public func flatScheduleTask<T: Sendable>(
         in delay: TimeAmount,
@@ -1047,9 +1047,9 @@ extension EventLoop {
         self._flatScheduleTask(in: delay, file: file, line: line, task)
     }
 
-    @usableFromInline typealias FlatScheduleTaskDelayCallback<T> = @Sendable () throws -> EventLoopFuture<T>
+     typealias FlatScheduleTaskDelayCallback<T> = @Sendable () throws -> EventLoopFuture<T>
 
-    @inlinable
+    
     func _flatScheduleTask<T: Sendable>(
         in delay: TimeAmount,
         file: StaticString,
@@ -1072,7 +1072,7 @@ extension EventLoop {
     }
 
     /// Creates and returns a new `EventLoopPromise` that will be notified using this `EventLoop` as execution `NIOThread`.
-    @inlinable
+    
     public func makePromise<T>(
         of type: T.Type = T.self,
         file: StaticString = #fileID,
@@ -1086,7 +1086,7 @@ extension EventLoop {
     /// - Parameters:
     ///   - error: the `Error` that is used by the `EventLoopFuture`.
     /// - Returns: a failed `EventLoopFuture`.
-    @inlinable
+    
     public func makeFailedFuture<T>(_ error: Error) -> EventLoopFuture<T> {
         EventLoopFuture<T>(eventLoop: self, error: error)
     }
@@ -1097,7 +1097,7 @@ extension EventLoop {
     ///   - value: the value that is used by the `EventLoopFuture`.
     /// - Returns: a succeeded `EventLoopFuture`.
     @preconcurrency
-    @inlinable
+    
     public func makeSucceededFuture<Success: Sendable>(_ value: Success) -> EventLoopFuture<Success> {
         if Success.self == Void.self {
             // The as! will always succeed because we previously checked that Success.self == Void.self.
@@ -1112,7 +1112,7 @@ extension EventLoop {
     /// - Parameters:
     ///   - value: the value that is used by the `EventLoopFuture.Isolated`.
     /// - Returns: a succeeded `EventLoopFuture.Isolated`.
-    @inlinable
+    
     @available(*, noasync)
     public func makeSucceededIsolatedFuture<Success>(_ value: Success) -> EventLoopFuture<Success>.Isolated {
         if Success.self == Void.self {
@@ -1129,7 +1129,7 @@ extension EventLoop {
     ///   - result: The value that is used by the `EventLoopFuture`
     /// - Returns: A completed `EventLoopFuture`.
     @preconcurrency
-    @inlinable
+    
     public func makeCompletedFuture<Success: Sendable>(_ result: Result<Success, Error>) -> EventLoopFuture<Success> {
         switch result {
         case .success(let value):
@@ -1145,7 +1145,7 @@ extension EventLoop {
     ///   - body: The function that is used to complete the `EventLoopFuture`
     /// - Returns: A completed `EventLoopFuture`.
     @preconcurrency
-    @inlinable
+    
     public func makeCompletedFuture<Success: Sendable>(
         withResultOf body: () throws -> Success
     ) -> EventLoopFuture<Success> {
@@ -1324,7 +1324,7 @@ extension EventLoop {
     ///   - delay: the `TimeAmount` delay to jitter.
     ///   - maximumAllowableJitter: Exclusive upper bound of jitter range added to the `delay` parameter.
     /// - Returns: The jittered delay.
-    @inlinable
+    
     static func _getJitteredDelay(
         delay: TimeAmount,
         maximumAllowableJitter: TimeAmount
@@ -1345,7 +1345,7 @@ extension EventLoop {
     /// `preconditionFailure(_:file:line:)`. Never has any effect in release mode.
     ///
     /// - Note: This is not a customization point so calls to this function can be fully optimized out in release mode.
-    @inlinable
+    
     public func assertInEventLoop(file: StaticString = #fileID, line: UInt = #line) {
         debugOnly {
             self.preconditionInEventLoop(file: file, line: line)
@@ -1357,7 +1357,7 @@ extension EventLoop {
     /// `preconditionFailure(_:file:line:)`. Never has any effect in release mode.
     ///
     /// - Note: This is not a customization point so calls to this function can be fully optimized out in release mode.
-    @inlinable
+    
     public func assertNotInEventLoop(file: StaticString = #fileID, line: UInt = #line) {
         debugOnly {
             self.preconditionNotInEventLoop(file: file, line: line)
@@ -1365,13 +1365,13 @@ extension EventLoop {
     }
 
     /// Checks the necessary condition of currently running on the called `EventLoop` for making forward progress.
-    @inlinable
+    
     public func preconditionInEventLoop(file: StaticString = #fileID, line: UInt = #line) {
         precondition(self.inEventLoop, file: file, line: line)
     }
 
     /// Checks the necessary condition of currently _not_ running on the called `EventLoop` for making forward progress.
-    @inlinable
+    
     public func preconditionNotInEventLoop(file: StaticString = #fileID, line: UInt = #line) {
         precondition(!self.inEventLoop, file: file, line: line)
     }
@@ -1528,7 +1528,7 @@ public enum EventLoopError: Error {
 }
 
 extension EventLoopError {
-    @usableFromInline
+    
     static let _cancelled: any Error = EventLoopError.cancelled
 }
 

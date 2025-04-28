@@ -82,9 +82,9 @@ public final class ServerBootstrap {
     private let childGroup: EventLoopGroup
     private var serverChannelInit: Optional<ChannelInitializerCallback>
     private var childChannelInit: Optional<ChannelInitializerCallback>
-    @usableFromInline
+    
     internal var _serverChannelOptions: ChannelOptions.Storage
-    @usableFromInline
+    
     internal var _childChannelOptions: ChannelOptions.Storage
     private var enableMPTCP: Bool
 
@@ -198,7 +198,7 @@ public final class ServerBootstrap {
     /// - Parameters:
     ///   - option: The option to be applied.
     ///   - value: The value for the option.
-    @inlinable
+    
     public func serverChannelOption<Option: ChannelOption>(_ option: Option, value: Option.Value) -> Self {
         self._serverChannelOptions.append(key: option, value: value)
         return self
@@ -209,7 +209,7 @@ public final class ServerBootstrap {
     /// - Parameters:
     ///   - option: The option to be applied.
     ///   - value: The value for the option.
-    @inlinable
+    
     public func childChannelOption<Option: ChannelOption>(_ option: Option, value: Option.Value) -> Self {
         self._childChannelOptions.append(key: option, value: value)
         return self
@@ -820,7 +820,7 @@ public final class ClientBootstrap: NIOClientTCPBootstrapProtocol {
             return self._channelInitializer
         }
     }
-    @usableFromInline
+    
     internal var _channelOptions: ChannelOptions.Storage
     private var connectTimeout: TimeAmount = TimeAmount.seconds(10)
     private var resolver: Optional<Resolver & Sendable>
@@ -905,7 +905,7 @@ public final class ClientBootstrap: NIOClientTCPBootstrapProtocol {
     /// - Parameters:
     ///   - option: The option to be applied.
     ///   - value: The value for the option.
-    @inlinable
+    
     public func channelOption<Option: ChannelOption>(_ option: Option, value: Option.Value) -> Self {
         self._channelOptions.append(key: option, value: value)
         return self
@@ -1664,7 +1664,7 @@ public final class DatagramBootstrap {
 
     private let group: EventLoopGroup
     private var channelInitializer: Optional<ChannelInitializerCallback>
-    @usableFromInline
+    
     internal var _channelOptions: ChannelOptions.Storage
     private var proto: NIOBSDSocket.ProtocolSubtype = .default
 
@@ -1716,7 +1716,7 @@ public final class DatagramBootstrap {
     /// - Parameters:
     ///   - option: The option to be applied.
     ///   - value: The value for the option.
-    @inlinable
+    
     public func channelOption<Option: ChannelOption>(_ option: Option, value: Option.Value) -> Self {
         self._channelOptions.append(key: option, value: value)
         return self
@@ -2233,7 +2233,7 @@ extension DatagramBootstrap: Sendable {}
 public final class NIOPipeBootstrap {
     private let group: EventLoopGroup
     private var channelInitializer: Optional<ChannelInitializerCallback>
-    @usableFromInline
+    
     internal var _channelOptions: ChannelOptions.Storage
     private let hooks: any NIOPipeBootstrapHooks
 
@@ -2302,7 +2302,7 @@ public final class NIOPipeBootstrap {
     /// - Parameters:
     ///   - option: The option to be applied.
     ///   - value: The value for the option.
-    @inlinable
+    
     public func channelOption<Option: ChannelOption>(_ option: Option, value: Option.Value) -> Self {
         self._channelOptions.append(key: option, value: value)
         return self

@@ -13,7 +13,7 @@
 //===----------------------------------------------------------------------===//
 
 extension EventLoop {
-    @inlinable
+    
     @available(*, deprecated, message: "Please don't pass file:line:, there's no point.")
     public func makeFailedFuture<T>(
         _ error: Error,
@@ -24,7 +24,7 @@ extension EventLoop {
     }
 
     @preconcurrency
-    @inlinable
+    
     @available(*, deprecated, message: "Please don't pass file:line:, there's no point.")
     public func makeSucceededFuture<Success: Sendable>(
         _ value: Success,

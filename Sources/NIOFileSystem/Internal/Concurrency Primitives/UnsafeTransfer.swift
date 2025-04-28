@@ -12,12 +12,12 @@
 //
 //===----------------------------------------------------------------------===//
 
-@usableFromInline
+
 struct UnsafeTransfer<Value>: @unchecked Sendable {
-    @usableFromInline
+    
     var wrappedValue: Value
 
-    @inlinable
+    
     init(_ wrappedValue: Value) {
         self.wrappedValue = wrappedValue
     }

@@ -160,7 +160,7 @@ extension ByteBuffer {
     /// This method is equivalent to calling `getWebSocketErrorCode(at: readerIndex)`.
     ///
     /// - Returns: The error code, or `nil` if there are not enough bytes to read the code.
-    @inlinable
+    
     public func peekWebSocketErrorCode() -> WebSocketErrorCode? {
         self.getWebSocketErrorCode(at: self.readerIndex)
     }

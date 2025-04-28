@@ -221,11 +221,11 @@ extension UInt: NIOAtomicPrimitive {
 /// the thread that modified it gets a local copy!
 @available(*, deprecated, message: "please use ManagedAtomic from https://github.com/apple/swift-atomics instead")
 public final class NIOAtomic<T: NIOAtomicPrimitive> {
-    @usableFromInline
+    
     typealias Manager = ManagedBufferPointer<Void, T.AtomicWrapper>
 
     /// Create an atomic object with `value`
-    @inlinable
+    
     public static func makeAtomic(value: T) -> NIOAtomic {
         let manager = Manager(bufferClass: self, minimumCapacity: 1) { _, _ in }
         manager.withUnsafeMutablePointerToElements {
@@ -249,7 +249,7 @@ public final class NIOAtomic<T: NIOAtomicPrimitive> {
     ///     succeeds.
     /// - Returns: `True` if the exchange occurred, or `False` if `expected` did not
     ///     match the current value and so no exchange occurred.
-    @inlinable
+    
     public func compareAndExchange(expected: T, desired: T) -> Bool {
         Manager(unsafeBufferObject: self).withUnsafeMutablePointerToElements {
             T.nio_atomic_compare_and_exchange($0, expected, desired)
@@ -264,7 +264,7 @@ public final class NIOAtomic<T: NIOAtomicPrimitive> {
     ///
     /// - Parameter rhs: The value to add to this object.
     /// - Returns: The previous value of this object, before the addition occurred.
-    @inlinable
+    
     @discardableResult
     public func add(_ rhs: T) -> T {
         Manager(unsafeBufferObject: self).withUnsafeMutablePointerToElements {
@@ -280,7 +280,7 @@ public final class NIOAtomic<T: NIOAtomicPrimitive> {
     ///
     /// - Parameter rhs: The value to subtract from this object.
     /// - Returns: The previous value of this object, before the subtraction occurred.
-    @inlinable
+    
     @discardableResult
     public func sub(_ rhs: T) -> T {
         Manager(unsafeBufferObject: self).withUnsafeMutablePointerToElements {
@@ -296,7 +296,7 @@ public final class NIOAtomic<T: NIOAtomicPrimitive> {
     ///
     /// - Parameter value: The new value to set this object to.
     /// - Returns: The value previously held by this object.
-    @inlinable
+    
     public func exchange(with value: T) -> T {
         Manager(unsafeBufferObject: self).withUnsafeMutablePointerToElements {
             T.nio_atomic_exchange($0, value)
@@ -310,7 +310,7 @@ public final class NIOAtomic<T: NIOAtomicPrimitive> {
     /// event will be ordered before or after this one.
     ///
     /// - Returns: The value of this object
-    @inlinable
+    
     public func load() -> T {
         Manager(unsafeBufferObject: self).withUnsafeMutablePointerToElements {
             T.nio_atomic_load($0)
@@ -324,7 +324,7 @@ public final class NIOAtomic<T: NIOAtomicPrimitive> {
     /// event will be ordered before or after this one.
     ///
     /// - Parameter value: The new value to set the object to.
-    @inlinable
+    
     public func store(_ value: T) {
         Manager(unsafeBufferObject: self).withUnsafeMutablePointerToElements {
             T.nio_atomic_store($0, value)

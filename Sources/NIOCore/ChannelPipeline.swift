@@ -533,7 +533,7 @@ public final class ChannelPipeline: ChannelInvoker {
     /// - Parameters:
     ///   - handlerType: The type of the handler to search for.
     /// - Returns: the `EventLoopFuture` which will be notified once the the operation completes.
-    @inlinable
+    
     public func context<Handler: ChannelHandler>(handlerType: Handler.Type) -> EventLoopFuture<ChannelHandlerContext> {
         let promise = self.eventLoop.makePromise(of: ChannelHandlerContext.self)
 
@@ -554,7 +554,7 @@ public final class ChannelPipeline: ChannelInvoker {
     ///   - type: The type of the handler.
     /// - Returns: An ``EventLoopFuture`` that is succeeded if a handler of the given type is contained in the pipeline. Otherwise
     /// the future will be failed with an error.
-    @inlinable
+    
     public func containsHandler<Handler: ChannelHandler>(type: Handler.Type) -> EventLoopFuture<Void> {
         self.handler(type: type).map { _ in () }
     }
@@ -565,7 +565,7 @@ public final class ChannelPipeline: ChannelInvoker {
     ///   - name: The name of the handler.
     /// - Returns: An ``EventLoopFuture`` that is succeeded if a handler of the given type is contained in the pipeline. Otherwise
     /// the future will be failed with an error.
-    @inlinable
+    
     public func containsHandler(name: String) -> EventLoopFuture<Void> {
         self.context(name: name).map { _ in () }
     }
@@ -576,7 +576,7 @@ public final class ChannelPipeline: ChannelInvoker {
     /// - Important: This must be called on the `EventLoop`.
     /// - Parameter handlerType: The type of handler to search for.
     /// - Returns: the `ChannelHandlerContext` that belongs to the `ChannelHandler`, if one exists.
-    @inlinable  // should be fileprivate
+      // should be fileprivate
     internal func _contextSync<Handler: ChannelHandler>(
         handlerType: Handler.Type
     ) -> Result<ChannelHandlerContext, Error> {
@@ -585,7 +585,7 @@ public final class ChannelPipeline: ChannelInvoker {
 
     /// Synchronously finds a `ChannelHandlerContext` in the `ChannelPipeline`.
     /// - Important: This must be called on the `EventLoop`.
-    @usableFromInline  // should be fileprivate
+      // should be fileprivate
     internal func _contextSync(_ body: (ChannelHandlerContext) -> Bool) -> Result<ChannelHandlerContext, Error> {
         self.eventLoop.assertInEventLoop()
 
@@ -726,7 +726,7 @@ public final class ChannelPipeline: ChannelInvoker {
         }
     }
 
-    @inlinable
+    
     public func fireChannelRead<T: Sendable>(_ data: T) {
         if eventLoop.inEventLoop {
             _fireChannelRead0(NIOAny(data))
@@ -825,7 +825,7 @@ public final class ChannelPipeline: ChannelInvoker {
         }
     }
 
-    @inlinable
+    
     public func write<T: Sendable>(_ data: T, promise: EventLoopPromise<Void>?) {
         if eventLoop.inEventLoop {
             _write0(NIOAny(data), promise: promise)
@@ -853,7 +853,7 @@ public final class ChannelPipeline: ChannelInvoker {
         }
     }
 
-    @inlinable
+    
     public func writeAndFlush<T: Sendable>(_ data: T, promise: EventLoopPromise<Void>?) {
         if eventLoop.inEventLoop {
             _writeAndFlush0(NIOAny(data), promise: promise)
@@ -935,7 +935,7 @@ public final class ChannelPipeline: ChannelInvoker {
         }
     }
 
-    @usableFromInline func _write0(_ data: NIOAny, promise: EventLoopPromise<Void>?) {
+     func _write0(_ data: NIOAny, promise: EventLoopPromise<Void>?) {
         if let firstOutboundCtx = firstOutboundCtx {
             firstOutboundCtx.invokeWrite(data, promise: promise)
         } else {
@@ -943,7 +943,7 @@ public final class ChannelPipeline: ChannelInvoker {
         }
     }
 
-    @usableFromInline func _writeAndFlush0(_ data: NIOAny, promise: EventLoopPromise<Void>?) {
+     func _writeAndFlush0(_ data: NIOAny, promise: EventLoopPromise<Void>?) {
         if let firstOutboundCtx = firstOutboundCtx {
             firstOutboundCtx.invokeWriteAndFlush(data, promise: promise)
         } else {
@@ -1007,7 +1007,7 @@ public final class ChannelPipeline: ChannelInvoker {
         }
     }
 
-    @usableFromInline func _fireChannelRead0(_ data: NIOAny) {
+     func _fireChannelRead0(_ data: NIOAny) {
         if let firstInboundCtx = firstInboundCtx {
             firstInboundCtx.invokeChannelRead(data)
         }
@@ -1221,7 +1221,7 @@ extension ChannelPipeline {
     ///
     /// All functions **must** be called from the pipeline's event loop.
     public struct SynchronousOperations {
-        @usableFromInline
+        
         internal let _pipeline: ChannelPipeline
 
         fileprivate init(pipeline: ChannelPipeline) {
@@ -1422,7 +1422,7 @@ extension ChannelPipeline {
         /// - Important: This *must* be called on the event loop.
         /// - Parameter handlerType: The type of the handler to search for.
         /// - Returns: The `ChannelHandlerContext` associated with the handler.
-        @inlinable
+        
         public func context<Handler: ChannelHandler>(handlerType: Handler.Type) throws -> ChannelHandlerContext {
             try self._pipeline._contextSync(handlerType: handlerType).get()
         }
@@ -1431,7 +1431,7 @@ extension ChannelPipeline {
         ///
         /// - Important: This *must* be called on the event loop.
         /// - Returns: A `ChannelHandler` of the given type if one exists in the `ChannelPipeline`.
-        @inlinable
+        
         public func handler<Handler: ChannelHandler>(type _: Handler.Type) throws -> Handler {
             try self._pipeline._handlerSync(type: Handler.self).get()
         }
@@ -2423,7 +2423,7 @@ extension ChannelPipeline: CustomDebugStringConvertible {
     ///
     /// - Parameters:
     ///   - type: the type of `ChannelHandler` to return.
-    @inlinable
+    
     public func handler<Handler: ChannelHandler>(type _: Handler.Type) -> EventLoopFuture<Handler> {
         self.context(handlerType: Handler.self).map { context in
             guard let typedContext = context.handler as? Handler else {
@@ -2441,7 +2441,7 @@ extension ChannelPipeline: CustomDebugStringConvertible {
     /// - Important: This must be called on the `EventLoop`.
     /// - Parameters:
     ///   - type: the type of `ChannelHandler` to return.
-    @inlinable  // should be fileprivate
+      // should be fileprivate
     internal func _handlerSync<Handler: ChannelHandler>(type _: Handler.Type) -> Result<Handler, Error> {
         self._contextSync(handlerType: Handler.self).map { context in
             guard let typedContext = context.handler as? Handler else {

@@ -22,7 +22,7 @@ public protocol NIOSerialEventLoopExecutor: EventLoop, SerialExecutor {}
 
 @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
 extension NIOSerialEventLoopExecutor {
-    @inlinable
+    
     public func enqueue(_ job: consuming ExecutorJob) {
         // By default we are just going to use execute to run the job
         // this is quite heavy since it allocates the closure for
@@ -33,24 +33,24 @@ extension NIOSerialEventLoopExecutor {
         }
     }
 
-    @inlinable
+    
     public func asUnownedSerialExecutor() -> UnownedSerialExecutor {
         UnownedSerialExecutor(complexEquality: self)
     }
 
-    @inlinable
+    
     public var executor: any SerialExecutor {
         self
     }
 
     @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
-    @inlinable
+    
     public func isSameExclusiveExecutionContext(other: Self) -> Bool {
         other === self
     }
 
     @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, *)
-    @inlinable
+    
     public func checkIsolated() {
         self.preconditionInEventLoop()
     }
@@ -63,10 +63,10 @@ extension NIOSerialEventLoopExecutor {
 /// executors. Adopters are recommended to conform their own event loop
 /// types to `SerialExecutor`.
 final class NIODefaultSerialEventLoopExecutor {
-    @usableFromInline
+    
     let loop: EventLoop
 
-    @inlinable
+    
     init(_ loop: EventLoop) {
         self.loop = loop
     }
@@ -74,18 +74,18 @@ final class NIODefaultSerialEventLoopExecutor {
 
 @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
 extension NIODefaultSerialEventLoopExecutor: SerialExecutor {
-    @inlinable
+    
     public func enqueue(_ job: consuming ExecutorJob) {
         self.loop.enqueue(job)
     }
 
-    @inlinable
+    
     public func asUnownedSerialExecutor() -> UnownedSerialExecutor {
         UnownedSerialExecutor(complexEquality: self)
 
     }
 
-    @inlinable
+    
     public func isSameExclusiveExecutionContext(other: NIODefaultSerialEventLoopExecutor) -> Bool {
         self.loop === other.loop
     }

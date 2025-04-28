@@ -144,7 +144,7 @@ extension ByteBuffer {
     ///   - length: The number of bytes of interest.
     ///   - byteTransferStrategy: Controls how to transfer the bytes (see `ByteTransferStrategy`).
     /// - Returns: A `Data` value containing the bytes of interest or `nil` if the selected bytes are not readable.
-    @inlinable
+    
     public func peekData(length: Int, byteTransferStrategy: ByteTransferStrategy) -> Data? {
         self.getData(
             at: self.readerIndex,
@@ -228,7 +228,7 @@ extension ByteBuffer {
     /// - Parameters:
     ///   - bytes: The bytes to write.
     /// - Returns: The number of bytes written.
-    @inlinable
+    
     @discardableResult
     public mutating func writeContiguousBytes<Bytes: ContiguousBytes>(_ bytes: Bytes) -> Int {
         let written = self.setContiguousBytes(bytes, at: self.writerIndex)
@@ -242,7 +242,7 @@ extension ByteBuffer {
     ///   - bytes: The bytes to write.
     ///   - index: The index for the first byte.
     /// - Returns: The number of bytes written.
-    @inlinable
+    
     @discardableResult
     public mutating func setContiguousBytes<Bytes: ContiguousBytes>(_ bytes: Bytes, at index: Int) -> Int {
         bytes.withUnsafeBytes { bufferPointer in
@@ -255,7 +255,7 @@ extension ByteBuffer {
     /// - Parameters:
     ///   - data: The data to write.
     /// - Returns: The number of bytes written.
-    @inlinable
+    
     @discardableResult
     public mutating func writeData<D: DataProtocol>(_ data: D) -> Int {
         let written = self.setData(data, at: self.writerIndex)
@@ -269,7 +269,7 @@ extension ByteBuffer {
     ///   - data: The data to write.
     ///   - index: The index for the first byte.
     /// - Returns: The number of bytes written.
-    @inlinable
+    
     @discardableResult
     public mutating func setData<D: DataProtocol>(_ data: D, at index: Int) -> Int {
         // DataProtocol refines RandomAccessCollection, so getting `count` must be O(1). This avoids
@@ -387,7 +387,7 @@ extension ByteBuffer {
     /// This method is equivalent to calling `getUUIDBytes(at: readerIndex)`.
     ///
     /// - Returns: A `UUID` value containing the bytes of interest or `nil` if the selected bytes are not readable.
-    @inlinable
+    
     public func peekUUIDBytes() -> UUID? {
         self.getUUIDBytes(at: self.readerIndex)
     }

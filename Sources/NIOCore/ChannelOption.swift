@@ -470,7 +470,7 @@ extension ChannelOptions {
     /// A type-safe storage facility for `ChannelOption`s. You will only ever need this if you implement your own
     /// `Channel` that needs to store `ChannelOption`s.
     public struct Storage: Sendable {
-        @usableFromInline
+        
         internal var _storage:
             [(
                 any ChannelOption,
@@ -487,7 +487,7 @@ extension ChannelOptions {
         /// - Parameters:
         ///    - newKey: the key for the option
         ///    - newValue: the value for the option
-        @inlinable
+        
         public mutating func append<Option: ChannelOption>(key newKey: Option, value newValue: Option.Value) {
             @Sendable
             func applier(_ t: Channel) -> (any ChannelOption, any Sendable) -> EventLoopFuture<Void> {

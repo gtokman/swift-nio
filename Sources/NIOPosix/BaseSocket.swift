@@ -23,7 +23,7 @@ import let WinSDK.EBADF
 import struct WinSDK.socklen_t
 #endif
 
-@usableFromInline
+
 protocol Registration {
     /// The `SelectorEventSet` in which the `Registration` is interested.
     var interested: SelectorEventSet { get set }

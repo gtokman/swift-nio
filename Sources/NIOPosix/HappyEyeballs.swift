@@ -180,7 +180,7 @@ internal struct HappyEyeballsConnector<ChannelBuilderResult: Sendable>: Sendable
     /// The promise that will hold the final connected channel.
     fileprivate let resolutionPromise: EventLoopPromise<(Channel, ChannelBuilderResult)>
 
-    @inlinable
+    
     init(
         resolver: Resolver & Sendable,
         loop: EventLoop,
@@ -215,7 +215,7 @@ internal struct HappyEyeballsConnector<ChannelBuilderResult: Sendable>: Sendable
         self.connectionDelay = connectionDelay
     }
 
-    @inlinable
+    
     init(
         resolver: Resolver & Sendable,
         loop: EventLoop,
@@ -242,7 +242,7 @@ internal struct HappyEyeballsConnector<ChannelBuilderResult: Sendable>: Sendable
     /// Initiate a DNS resolution attempt using Happy Eyeballs 2.
     ///
     /// returns: An `EventLoopFuture` that fires with a connected `Channel`.
-    @inlinable
+    
     func resolveAndConnect() -> EventLoopFuture<(Channel, ChannelBuilderResult)> {
         // We dispatch ourselves onto the event loop, rather than do all the rest of our processing from outside it.
         self.loop.execute {
@@ -255,7 +255,7 @@ internal struct HappyEyeballsConnector<ChannelBuilderResult: Sendable>: Sendable
     /// Initiate a DNS resolution attempt using Happy Eyeballs 2.
     ///
     /// returns: An `EventLoopFuture` that fires with a connected `Channel`.
-    @inlinable
+    
     func resolveAndConnect() -> EventLoopFuture<Channel> where ChannelBuilderResult == Void {
         self.resolveAndConnect().map { $0.0 }
     }
@@ -360,7 +360,7 @@ private final class HappyEyeballsConnectorRunner<ChannelBuilderResult: Sendable>
     /// An object that holds any errors we encountered.
     private var error: NIOConnectionError
 
-    @inlinable
+    
     init(
         connector: HappyEyeballsConnector<ChannelBuilderResult>
     ) {
@@ -374,7 +374,7 @@ private final class HappyEyeballsConnectorRunner<ChannelBuilderResult: Sendable>
     }
 
     /// Initiate a DNS resolution attempt using Happy Eyeballs 2.
-    @inlinable
+    
     func resolveAndConnect() {
         self.timeoutTask = self.connector.loop.assumeIsolated().scheduleTask(in: self.connector.connectTimeout) {
             self.processInput(.connectTimeoutElapsed)

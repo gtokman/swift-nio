@@ -1394,20 +1394,20 @@ class BaseSocketChannel<SocketType: BaseSocketProtocol>: SelectableChannel, Chan
 
 extension BaseSocketChannel {
     public struct SynchronousOptions: NIOSynchronousChannelOptions {
-        @usableFromInline  // should be private
+          // should be private
         internal let _channel: BaseSocketChannel<SocketType>
 
-        @inlinable  // should be fileprivate
+          // should be fileprivate
         internal init(_channel channel: BaseSocketChannel<SocketType>) {
             self._channel = channel
         }
 
-        @inlinable
+        
         public func setOption<Option: ChannelOption>(_ option: Option, value: Option.Value) throws {
             try self._channel.setOption0(option, value: value)
         }
 
-        @inlinable
+        
         public func getOption<Option: ChannelOption>(_ option: Option) throws -> Option.Value {
             try self._channel.getOption0(option)
         }

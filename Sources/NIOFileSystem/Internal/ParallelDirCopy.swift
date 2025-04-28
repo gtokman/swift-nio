@@ -28,7 +28,7 @@ extension FileSystem {
     /// Note: `maxConcurrentOperations` is used as a hard (conservative) limit on the number of open
     /// file descriptors at any point. Operations are assumed to consume 2 descriptors, so the
     /// maximum open descriptors are `maxConcurrentOperations * 2`
-    @usableFromInline
+    
     func copyDirectoryParallel(
         from sourcePath: FilePath,
         to destinationPath: FilePath,
@@ -157,9 +157,9 @@ private struct NoBackPressureStrategy: NIOAsyncSequenceProducerBackPressureStrat
 /// We ignore back pressure, the inherent handle limiting in copyDirectoryParallel means it is unnecessary.
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 private struct DirCopyDelegate: NIOAsyncSequenceProducerDelegate, Sendable {
-    @inlinable
+    
     func produceMore() {}
 
-    @inlinable
+    
     func didTerminate() {}
 }

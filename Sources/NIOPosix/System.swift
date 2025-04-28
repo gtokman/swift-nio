@@ -184,7 +184,7 @@ private let sysRecvMmsg = CNIODarwin_recvmmsg
 private let sysIoctl: @convention(c) (CInt, CUnsignedLong, UnsafeMutableRawPointer) -> CInt = ioctl
 #endif  // !os(Windows)
 
-@inlinable
+
 func isUnacceptableErrno(_ code: CInt) -> Bool {
     // On iOS, EBADF is a possible result when a file descriptor has been reaped in the background.
     // In particular, it's possible to get EBADF from accept(), where the underlying accept() FD
@@ -208,7 +208,7 @@ func isUnacceptableErrno(_ code: CInt) -> Bool {
     #endif
 }
 
-@inlinable
+
 public func isUnacceptableErrnoOnClose(_ code: CInt) -> Bool {
     // We treat close() differently to all other FDs: we still want to catch EBADF here.
     switch code {
@@ -219,7 +219,7 @@ public func isUnacceptableErrnoOnClose(_ code: CInt) -> Bool {
     }
 }
 
-@inlinable
+
 internal func isUnacceptableErrnoForbiddingEINVAL(_ code: CInt) -> Bool {
     // We treat read() and pread() differently since we also want to catch EINVAL.
     #if canImport(Darwin) && !os(macOS)
@@ -240,7 +240,7 @@ internal func isUnacceptableErrnoForbiddingEINVAL(_ code: CInt) -> Bool {
 }
 
 #if os(Windows)
-@inlinable
+
 internal func strerror(_ errno: CInt) -> String {
     withUnsafeTemporaryAllocation(of: CChar.self, capacity: 95) {
         let result = strerror_s($0.baseAddress, $0.count, errno)
@@ -250,7 +250,7 @@ internal func strerror(_ errno: CInt) -> String {
 }
 #endif
 
-@inlinable
+
 internal func preconditionIsNotUnacceptableErrno(err: CInt, where function: String) {
     // strerror is documented to return "Unknown error: ..." for illegal value so it won't ever fail
     #if os(Windows)
@@ -263,7 +263,7 @@ internal func preconditionIsNotUnacceptableErrno(err: CInt, where function: Stri
     #endif
 }
 
-@inlinable
+
 internal func preconditionIsNotUnacceptableErrnoOnClose(err: CInt, where function: String) {
     // strerror is documented to return "Unknown error: ..." for illegal value so it won't ever fail
     #if os(Windows)
@@ -276,7 +276,7 @@ internal func preconditionIsNotUnacceptableErrnoOnClose(err: CInt, where functio
     #endif
 }
 
-@inlinable
+
 internal func preconditionIsNotUnacceptableErrnoForbiddingEINVAL(err: CInt, where function: String) {
     // strerror is documented to return "Unknown error: ..." for illegal value so it won't ever fail
     #if os(Windows)
@@ -297,7 +297,7 @@ internal func preconditionIsNotUnacceptableErrnoForbiddingEINVAL(err: CInt, wher
 // take twice the time, ie. we need this exception.
 @inline(__always)
 @discardableResult
-@inlinable
+
 internal func syscall<T: FixedWidthInteger>(
     blocking: Bool,
     where function: String = #function,
@@ -330,7 +330,7 @@ internal func syscall<T: FixedWidthInteger>(
 
 #if canImport(Darwin)
 @inline(__always)
-@inlinable
+
 @discardableResult
 internal func syscall<T>(
     where function: String = #function,
@@ -355,7 +355,7 @@ internal func syscall<T>(
 }
 #elseif os(Linux) || os(Android)
 @inline(__always)
-@inlinable
+
 @discardableResult
 internal func syscall(
     where function: String = #function,
@@ -382,7 +382,7 @@ internal func syscall(
 
 #if !os(Windows)
 @inline(__always)
-@inlinable
+
 @discardableResult
 internal func syscallOptional<T>(
     where function: String = #function,
@@ -414,7 +414,7 @@ internal func syscallOptional<T>(
 // however we seem to break the inlining threshold which makes a system call
 // take twice the time, ie. we need this exception.
 @inline(__always)
-@inlinable
+
 @discardableResult
 internal func syscallForbiddingEINVAL<T: FixedWidthInteger>(
     where function: String = #function,
@@ -445,60 +445,60 @@ internal func syscallForbiddingEINVAL<T: FixedWidthInteger>(
     }
 }
 
-@usableFromInline
+
 internal enum Posix: Sendable {
     #if canImport(Darwin)
-    @usableFromInline
+    
     static let UIO_MAXIOV: Int = 1024
-    @usableFromInline
+    
     static let SHUT_RD: CInt = CInt(Darwin.SHUT_RD)
-    @usableFromInline
+    
     static let SHUT_WR: CInt = CInt(Darwin.SHUT_WR)
-    @usableFromInline
+    
     static let SHUT_RDWR: CInt = CInt(Darwin.SHUT_RDWR)
     #elseif os(Linux) || os(FreeBSD) || os(Android)
     #if canImport(Glibc)
-    @usableFromInline
+    
     static let UIO_MAXIOV: Int = Int(Glibc.UIO_MAXIOV)
-    @usableFromInline
+    
     static let SHUT_RD: CInt = CInt(Glibc.SHUT_RD)
-    @usableFromInline
+    
     static let SHUT_WR: CInt = CInt(Glibc.SHUT_WR)
-    @usableFromInline
+    
     static let SHUT_RDWR: CInt = CInt(Glibc.SHUT_RDWR)
     #elseif canImport(Musl)
-    @usableFromInline
+    
     static let UIO_MAXIOV: Int = Int(Musl.UIO_MAXIOV)
-    @usableFromInline
+    
     static let SHUT_RD: CInt = CInt(Musl.SHUT_RD)
-    @usableFromInline
+    
     static let SHUT_WR: CInt = CInt(Musl.SHUT_WR)
-    @usableFromInline
+    
     static let SHUT_RDWR: CInt = CInt(Musl.SHUT_RDWR)
     #elseif canImport(Android)
-    @usableFromInline
+    
     static let UIO_MAXIOV: Int = Int(Android.UIO_MAXIOV)
-    @usableFromInline
+    
     static let SHUT_RD: CInt = CInt(Android.SHUT_RD)
-    @usableFromInline
+    
     static let SHUT_WR: CInt = CInt(Android.SHUT_WR)
-    @usableFromInline
+    
     static let SHUT_RDWR: CInt = CInt(Android.SHUT_RDWR)
     #endif
     #else
-    @usableFromInline
+    
     static var UIO_MAXIOV: Int {
         fatalError("unsupported OS")
     }
-    @usableFromInline
+    
     static var SHUT_RD: Int {
         fatalError("unsupported OS")
     }
-    @usableFromInline
+    
     static var SHUT_WR: Int {
         fatalError("unsupported OS")
     }
-    @usableFromInline
+    
     static var SHUT_RDWR: Int {
         fatalError("unsupported OS")
     }
@@ -587,7 +587,7 @@ internal enum Posix: Sendable {
 
     @inline(never)
     @discardableResult
-    @usableFromInline
+    
     // TODO: Allow varargs
     internal static func fcntl(descriptor: CInt, command: CInt, value: CInt) throws -> CInt {
         try syscall(blocking: false) {
@@ -1060,7 +1060,7 @@ extension Posix {
 #endif
 
 #if canImport(Darwin)
-@usableFromInline
+
 internal enum KQueue: Sendable {
 
     // TODO: Figure out how to specify a typealias to the kevent struct without run into trouble with the swift compiler

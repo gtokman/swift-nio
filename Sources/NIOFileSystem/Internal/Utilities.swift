@@ -14,11 +14,11 @@
 
 import SystemPackage
 
-@usableFromInline
+
 internal final class Ref<Value> {
-    @usableFromInline
+    
     var value: Value
-    @inlinable
+    
     init(_ value: Value) {
         self.value = value
     }

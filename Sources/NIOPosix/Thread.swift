@@ -40,7 +40,7 @@ protocol ThreadOps {
 /// A Thread that executes some runnable block.
 ///
 /// All methods exposed are thread-safe.
-@usableFromInline
+
 final class NIOThread: Sendable {
     internal typealias ThreadBoxValue = (body: (NIOThread) -> Void, name: String?)
     internal typealias ThreadBox = Box<ThreadBoxValue>

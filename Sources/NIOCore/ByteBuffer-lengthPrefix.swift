@@ -38,7 +38,7 @@ extension ByteBuffer {
     /// - Throws: If the number of bytes written during `writeMessage` can not be exactly represented as the given `Integer` i.e. if the number of bytes written is greater than `Integer.max`
     /// - Returns: Number of total bytes written
     @discardableResult
-    @inlinable
+    
     public mutating func writeLengthPrefixed<Integer>(
         endianness: Endianness = .big,
         as integer: Integer.Type,
@@ -86,7 +86,7 @@ extension ByteBuffer {
     ///            the length prefix is negative or
     ///            the buffer does not contain enough bytes to read a message of this length.
     ///            Otherwise the result of `readMessage`.
-    @inlinable
+    
     public mutating func readLengthPrefixed<Integer, Result>(
         endianness: Endianness = .big,
         as integer: Integer.Type,
@@ -111,7 +111,7 @@ extension ByteBuffer {
     ///            the length prefix is negative or
     ///            the buffer does not contain enough bytes to read a message of this length.
     ///            Otherwise the message after the length prefix.
-    @inlinable
+    
     public mutating func readLengthPrefixedSlice<Integer>(
         endianness: Endianness = .big,
         as integer: Integer.Type
@@ -134,7 +134,7 @@ extension ByteBuffer {
     ///            the length prefix is negative or
     ///            the buffer does not contain enough bytes to read a message of this length.
     ///            Otherwise the message after the length prefix.
-    @inlinable
+    
     public func getLengthPrefixedSlice<Integer>(
         at index: Int,
         endianness: Endianness = .big,
@@ -160,7 +160,7 @@ extension ByteBuffer {
     ///   - integer: The `FixedWidthInteger` type for the length prefix.
     /// - Returns: `nil` if the length prefix could not be read, the length prefix is negative, or if there aren't enough
     ///            bytes for the message after the prefix. Otherwise, a slice of the requested length.
-    @inlinable
+    
     public func peekLengthPrefixedSlice<Integer>(
         endianness: Endianness = .big,
         as integer: Integer.Type

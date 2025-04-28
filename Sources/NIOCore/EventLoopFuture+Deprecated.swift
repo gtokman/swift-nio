@@ -14,7 +14,7 @@
 
 extension EventLoopFuture {
     @preconcurrency
-    @inlinable
+    
     @available(*, deprecated, message: "Please don't pass file:line:, there's no point.")
     public func flatMap<NewValue: Sendable>(
         file: StaticString = #fileID,
@@ -25,7 +25,7 @@ extension EventLoopFuture {
     }
 
     @preconcurrency
-    @inlinable
+    
     @available(*, deprecated, message: "Please don't pass file:line:, there's no point.")
     public func flatMapThrowing<NewValue: Sendable>(
         file: StaticString = #fileID,
@@ -35,7 +35,7 @@ extension EventLoopFuture {
         self.flatMapThrowing(callback)
     }
 
-    @inlinable
+    
     @available(*, deprecated, message: "Please don't pass file:line:, there's no point.")
     public func flatMapErrorThrowing(
         file: StaticString = #fileID,
@@ -45,7 +45,7 @@ extension EventLoopFuture {
         self.flatMapErrorThrowing(callback)
     }
 
-    @inlinable
+    
     @available(*, deprecated, message: "Please don't pass file:line:, there's no point.")
     public func map<NewValue>(
         file: StaticString = #fileID,
@@ -55,7 +55,7 @@ extension EventLoopFuture {
         self.map(callback)
     }
 
-    @inlinable
+    
     @available(*, deprecated, message: "Please don't pass file:line:, there's no point.")
     public func flatMapError(
         file: StaticString = #fileID,
@@ -66,7 +66,7 @@ extension EventLoopFuture {
     }
 
     @preconcurrency
-    @inlinable
+    
     @available(*, deprecated, message: "Please don't pass file:line:, there's no point.")
     public func flatMapResult<NewValue, SomeError: Error>(
         file: StaticString = #fileID,
@@ -77,7 +77,7 @@ extension EventLoopFuture {
     }
 
     @preconcurrency
-    @inlinable
+    
     @available(*, deprecated, message: "Please don't pass file:line:, there's no point.")
     public func recover(
         file: StaticString = #fileID,
@@ -88,7 +88,7 @@ extension EventLoopFuture {
     }
 
     @preconcurrency
-    @inlinable
+    
     @available(*, deprecated, message: "Please don't pass file:line:, there's no point.")
     public func and<OtherValue: Sendable>(
         _ other: EventLoopFuture<OtherValue>,
@@ -99,7 +99,7 @@ extension EventLoopFuture {
     }
 
     @preconcurrency
-    @inlinable
+    
     @available(*, deprecated, message: "Please don't pass file:line:, there's no point.")
     public func and<OtherValue: Sendable>(
         value: OtherValue,

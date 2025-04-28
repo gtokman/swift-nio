@@ -124,14 +124,14 @@ extension ChannelOptions {
         var allowRemoteHalfClosure = false
 
         /// Construct from an array literal.
-        @inlinable
+        
         public init(arrayLiteral elements: TCPConvenienceOption...) {
             for element in elements {
                 self.add(element)
             }
         }
 
-        @usableFromInline
+        
         mutating func add(_ element: TCPConvenienceOption) {
             switch element.data {
             case .allowLocalEndpointReuse:

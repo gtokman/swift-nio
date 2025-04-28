@@ -20,7 +20,7 @@ import NIOCore
 import Dispatch
 #endif
 
-@usableFromInline
+
 struct NIORegistration: Registration {
     enum ChannelType {
         case serverSocketChannel(ServerSocketChannel)
@@ -32,11 +32,11 @@ struct NIORegistration: Registration {
     var channel: ChannelType
 
     /// The `SelectorEventSet` in which this `NIORegistration` is interested in.
-    @usableFromInline
+    
     var interested: SelectorEventSet
 
     /// The registration ID for this `NIORegistration` used by the `Selector`.
-    @usableFromInline
+    
     var registrationID: SelectorRegistrationID
 }
 
@@ -494,9 +494,9 @@ extension MultiThreadedEventLoopGroup: CustomStringConvertible {
     }
 }
 
-@usableFromInline
+
 struct ErasedUnownedJob: Sendable {
-    @usableFromInline
+    
     let erasedJob: any Sendable
 
     @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
@@ -505,22 +505,22 @@ struct ErasedUnownedJob: Sendable {
     }
 
     @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
-    @inlinable
+    
     var unownedJob: UnownedJob {
         // This force-cast is safe since we only store an UnownedJob
         self.erasedJob as! UnownedJob
     }
 }
 
-@usableFromInline
+
 internal struct ScheduledTask {
-    @usableFromInline
+    
     enum Kind {
         case task(task: () -> Void, failFn: (Error) -> Void)
         case callback(any NIOScheduledCallbackHandler)
     }
 
-    @usableFromInline
+    
     let kind: Kind
 
     /// The id of the scheduled task.
@@ -528,20 +528,20 @@ internal struct ScheduledTask {
     /// - Important: This id has two purposes. First, it is used to give this struct an identity so that we can implement ``Equatable``
     ///     Second, it is used to give the tasks an order which we use to execute them.
     ///     This means, the ids need to be unique for a given ``SelectableEventLoop`` and they need to be in ascending order.
-    @usableFromInline
+    
     let id: UInt64
 
-    @usableFromInline
+    
     internal let readyTime: NIODeadline
 
-    @usableFromInline
+    
     init(id: UInt64, _ task: @escaping () -> Void, _ failFn: @escaping (Error) -> Void, _ time: NIODeadline) {
         self.id = id
         self.readyTime = time
         self.kind = .task(task: task, failFn: failFn)
     }
 
-    @usableFromInline
+    
     init(id: UInt64, _ handler: any NIOScheduledCallbackHandler, _ time: NIODeadline) {
         self.id = id
         self.readyTime = time
@@ -550,14 +550,14 @@ internal struct ScheduledTask {
 }
 
 extension ScheduledTask: CustomStringConvertible {
-    @usableFromInline
+    
     var description: String {
         "ScheduledTask(readyTime: \(self.readyTime))"
     }
 }
 
 extension ScheduledTask: Comparable {
-    @usableFromInline
+    
     static func < (lhs: ScheduledTask, rhs: ScheduledTask) -> Bool {
         if lhs.readyTime == rhs.readyTime {
             return lhs.id < rhs.id
@@ -566,7 +566,7 @@ extension ScheduledTask: Comparable {
         }
     }
 
-    @usableFromInline
+    
     static func == (lhs: ScheduledTask, rhs: ScheduledTask) -> Bool {
         lhs.id == rhs.id
     }
@@ -579,7 +579,7 @@ extension ScheduledTask: Sendable {}
 extension ScheduledTask.Kind: Sendable {}
 
 extension NIODeadline {
-    @inlinable
+    
     func readyIn(_ target: NIODeadline) -> TimeAmount {
         if self < target {
             return .nanoseconds(0)

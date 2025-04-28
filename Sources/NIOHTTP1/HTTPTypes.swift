@@ -308,7 +308,7 @@ extension HTTPHeaders {
 /// or split representation, such that header fields that are able to be repeated
 /// can be represented appropriately.
 public struct HTTPHeaders: CustomStringConvertible, ExpressibleByDictionaryLiteral {
-    @usableFromInline
+    
     internal var headers: [(String, String)]
     internal var keepAliveState: KeepAliveState = .unknown
 
@@ -376,7 +376,7 @@ public struct HTTPHeaders: CustomStringConvertible, ExpressibleByDictionaryLiter
     /// - Parameter other: The sequence of header name/value pairs. For maximum compatibility
     ///     the header should be an ASCII string. For future-proofing with HTTP/2 lowercase header
     ///     names are strongly recommended.
-    @inlinable
+    
     public mutating func add<S: Sequence>(contentsOf other: S) where S.Element == (String, String) {
         self.headers.reserveCapacity(self.headers.count + other.underestimatedCount)
         for (name, value) in other {

@@ -64,11 +64,11 @@ private func sys_sched_yield() {
 /// SwiftNIO this usually involves communicating across multiple event loops.
 @available(*, deprecated, message: "please use UnsafeAtomic from https://github.com/apple/swift-atomics instead")
 public struct UnsafeEmbeddedAtomic<T: AtomicPrimitive> {
-    @usableFromInline
+    
     internal let value: OpaquePointer
 
     /// Create an atomic object with `value`.
-    @inlinable
+    
     public init(value: T) {
         self.value = T.atomic_create(value)
     }
@@ -88,7 +88,7 @@ public struct UnsafeEmbeddedAtomic<T: AtomicPrimitive> {
     ///     succeeds.
     /// - Returns: `True` if the exchange occurred, or `False` if `expected` did not
     ///     match the current value and so no exchange occurred.
-    @inlinable
+    
     public func compareAndExchange(expected: T, desired: T) -> Bool {
         T.atomic_compare_and_exchange(self.value, expected, desired)
     }
@@ -102,7 +102,7 @@ public struct UnsafeEmbeddedAtomic<T: AtomicPrimitive> {
     /// - Parameter rhs: The value to add to this object.
     /// - Returns: The previous value of this object, before the addition occurred.
     @discardableResult
-    @inlinable
+    
     public func add(_ rhs: T) -> T {
         T.atomic_add(self.value, rhs)
     }
@@ -116,7 +116,7 @@ public struct UnsafeEmbeddedAtomic<T: AtomicPrimitive> {
     /// - Parameter rhs: The value to subtract from this object.
     /// - Returns: The previous value of this object, before the subtraction occurred.
     @discardableResult
-    @inlinable
+    
     public func sub(_ rhs: T) -> T {
         T.atomic_sub(self.value, rhs)
     }
@@ -129,7 +129,7 @@ public struct UnsafeEmbeddedAtomic<T: AtomicPrimitive> {
     ///
     /// - Parameter value: The new value to set this object to.
     /// - Returns: The value previously held by this object.
-    @inlinable
+    
     public func exchange(with value: T) -> T {
         T.atomic_exchange(self.value, value)
     }
@@ -141,7 +141,7 @@ public struct UnsafeEmbeddedAtomic<T: AtomicPrimitive> {
     /// event will be ordered before or after this one.
     ///
     /// - Returns: The value of this object
-    @inlinable
+    
     public func load() -> T {
         T.atomic_load(self.value)
     }
@@ -153,7 +153,7 @@ public struct UnsafeEmbeddedAtomic<T: AtomicPrimitive> {
     /// event will be ordered before or after this one.
     ///
     /// - Parameter value: The new value to set the object to.
-    @inlinable
+    
     public func store(_ value: T) {
         T.atomic_store(self.value, value)
     }
@@ -190,11 +190,11 @@ extension UnsafeEmbeddedAtomic: @unchecked Sendable where T: Sendable {}
 /// the thread that modified it gets a local copy!
 @available(*, deprecated, message: "please use ManagedAtomic from https://github.com/apple/swift-atomics instead")
 public final class Atomic<T: AtomicPrimitive> {
-    @usableFromInline
+    
     internal let embedded: UnsafeEmbeddedAtomic<T>
 
     /// Create an atomic object with `value`.
-    @inlinable
+    
     public init(value: T) {
         self.embedded = UnsafeEmbeddedAtomic(value: value)
     }
@@ -214,7 +214,7 @@ public final class Atomic<T: AtomicPrimitive> {
     ///     succeeds.
     /// - Returns: `True` if the exchange occurred, or `False` if `expected` did not
     ///     match the current value and so no exchange occurred.
-    @inlinable
+    
     public func compareAndExchange(expected: T, desired: T) -> Bool {
         self.embedded.compareAndExchange(expected: expected, desired: desired)
     }
@@ -228,7 +228,7 @@ public final class Atomic<T: AtomicPrimitive> {
     /// - Parameter rhs: The value to add to this object.
     /// - Returns: The previous value of this object, before the addition occurred.
     @discardableResult
-    @inlinable
+    
     public func add(_ rhs: T) -> T {
         self.embedded.add(rhs)
     }
@@ -242,7 +242,7 @@ public final class Atomic<T: AtomicPrimitive> {
     /// - Parameter rhs: The value to subtract from this object.
     /// - Returns: The previous value of this object, before the subtraction occurred.
     @discardableResult
-    @inlinable
+    
     public func sub(_ rhs: T) -> T {
         self.embedded.sub(rhs)
     }
@@ -255,7 +255,7 @@ public final class Atomic<T: AtomicPrimitive> {
     ///
     /// - Parameter value: The new value to set this object to.
     /// - Returns: The value previously held by this object.
-    @inlinable
+    
     public func exchange(with value: T) -> T {
         self.embedded.exchange(with: value)
     }
@@ -267,7 +267,7 @@ public final class Atomic<T: AtomicPrimitive> {
     /// event will be ordered before or after this one.
     ///
     /// - Returns: The value of this object
-    @inlinable
+    
     public func load() -> T {
         self.embedded.load()
     }
@@ -279,7 +279,7 @@ public final class Atomic<T: AtomicPrimitive> {
     /// event will be ordered before or after this one.
     ///
     /// - Parameter value: The new value to set the object to.
-    @inlinable
+    
     public func store(_ value: T) {
         self.embedded.store(value)
     }

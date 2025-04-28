@@ -18,7 +18,7 @@
 import CNIOLinux
 import NIOCore
 
-@usableFromInline
+
 enum CQEEventType: UInt8 {
     case poll = 1
     case pollModify, pollDelete  // start with 1 to not get zero bit patterns for stdin
@@ -42,14 +42,14 @@ extension TimeAmount {
 // URingUserData supports (un)packing into an `UInt64` as io_uring has a user_data 64-bit payload which is set in the SQE
 // and returned in the CQE. We're using 56 of those 64 bits, 32 for the file descriptor, 16 for a "registration ID" and 8
 // for the type of event issued (poll/modify/delete).
-@usableFromInline struct URingUserData {
-    @usableFromInline var fileDescriptor: CInt
+ struct URingUserData {
+     var fileDescriptor: CInt
     // SelectorRegistrationID truncated, only have room for bottom 16 bits (could be expanded to 24 if required)
-    @usableFromInline var registrationID: UInt16
-    @usableFromInline var eventType: CQEEventType
-    @usableFromInline var padding: Int8  // reserved for future use
+     var registrationID: UInt16
+     var eventType: CQEEventType
+     var padding: Int8  // reserved for future use
 
-    @inlinable init(registrationID: SelectorRegistrationID, fileDescriptor: CInt, eventType: CQEEventType) {
+     init(registrationID: SelectorRegistrationID, fileDescriptor: CInt, eventType: CQEEventType) {
         assert(MemoryLayout<UInt64>.size == MemoryLayout<URingUserData>.size)
         self.registrationID = UInt16(truncatingIfNeeded: registrationID.rawValue)
         self.fileDescriptor = fileDescriptor
@@ -57,7 +57,7 @@ extension TimeAmount {
         self.padding = 0
     }
 
-    @inlinable init(rawValue: UInt64) {
+     init(rawValue: UInt64) {
         let unpacked = IntegerBitPacking.unpackUInt32UInt16UInt8(rawValue)
         self = .init(
             registrationID: SelectorRegistrationID(rawValue: UInt32(unpacked.1)),

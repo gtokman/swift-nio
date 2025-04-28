@@ -23,17 +23,17 @@
 /// that much easier.
 public struct NIOLockedValueBox<Value> {
 
-    @usableFromInline
+    
     internal let _storage: LockStorage<Value>
 
     /// Initialize the `Value`.
-    @inlinable
+    
     public init(_ value: Value) {
         self._storage = .create(value: value)
     }
 
     /// Access the `Value`, allowing mutation of it.
-    @inlinable
+    
     public func withLockedValue<T>(_ mutate: (inout Value) throws -> T) rethrows -> T {
         try self._storage.withLockedValue(mutate)
     }
@@ -49,17 +49,17 @@ public struct NIOLockedValueBox<Value> {
 
     /// Provides an unsafe view over the lock and its value.
     public struct Unsafe {
-        @usableFromInline
+        
         let _storage: LockStorage<Value>
 
         /// Manually acquire the lock.
-        @inlinable
+        
         public func lock() {
             self._storage.lock()
         }
 
         /// Manually release the lock.
-        @inlinable
+        
         public func unlock() {
             self._storage.unlock()
         }
@@ -68,7 +68,7 @@ public struct NIOLockedValueBox<Value> {
         ///
         /// - Parameter mutate: A closure with scoped access to the value.
         /// - Returns: The result of the `mutate` closure.
-        @inlinable
+        
         public func withValueAssumingLockIsAcquired<Result>(
             _ mutate: (_ value: inout Value) throws -> Result
         ) rethrows -> Result {

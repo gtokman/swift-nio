@@ -13,7 +13,7 @@
 //===----------------------------------------------------------------------===//
 
 extension ByteBuffer {
-    @inlinable
+    
     func _toEndianness<T: FixedWidthInteger>(value: T, endianness: Endianness) -> T {
         switch endianness {
         case .little:
@@ -29,7 +29,7 @@ extension ByteBuffer {
     ///   - endianness: The endianness of the integer in this `ByteBuffer` (defaults to big endian).
     ///   - as: the desired `FixedWidthInteger` type (optional parameter)
     /// - Returns: An integer value deserialized from this `ByteBuffer` or `nil` if there aren't enough bytes readable.
-    @inlinable
+    
     public mutating func readInteger<T: FixedWidthInteger>(endianness: Endianness = .big, as: T.Type = T.self) -> T? {
         guard let result = self.getInteger(at: self.readerIndex, endianness: endianness, as: T.self) else {
             return nil
@@ -47,7 +47,7 @@ extension ByteBuffer {
     ///   - as: the desired `FixedWidthInteger` type (optional parameter)
     /// - Returns: An integer value deserialized from this `ByteBuffer` or `nil` if the bytes of interest are not
     ///            readable.
-    @inlinable
+    
     public func getInteger<T: FixedWidthInteger>(
         at index: Int,
         endianness: Endianness = Endianness.big,
@@ -81,7 +81,7 @@ extension ByteBuffer {
     ///   - as: the desired `FixedWidthInteger` type (optional parameter)
     /// - Returns: The number of bytes written.
     @discardableResult
-    @inlinable
+    
     public mutating func writeInteger<T: FixedWidthInteger>(
         _ integer: T,
         endianness: Endianness = .big,
@@ -101,7 +101,7 @@ extension ByteBuffer {
     ///   - as: the desired `FixedWidthInteger` type (optional parameter)
     /// - Returns: The number of bytes written.
     @discardableResult
-    @inlinable
+    
     public mutating func setInteger<T: FixedWidthInteger>(
         _ integer: T,
         at index: Int,
@@ -122,7 +122,7 @@ extension ByteBuffer {
     ///   - endianness: The endianness of the integer (defaults to big endian).
     ///   - as: The desired `FixedWidthInteger` type (optional parameter).
     /// - Returns: An integer value deserialized from this `ByteBuffer` or `nil` if the bytes are not readable.
-    @inlinable
+    
     public func peekInteger<T: FixedWidthInteger>(
         endianness: Endianness = .big,
         as: T.Type = T.self
@@ -134,7 +134,7 @@ extension ByteBuffer {
 extension FixedWidthInteger {
 
     /// Returns the next power of two.
-    @inlinable
+    
     func nextPowerOf2() -> Self {
         guard self != 0 else {
             return 1
@@ -143,7 +143,7 @@ extension FixedWidthInteger {
     }
 
     /// Returns the previous power of 2, or self if it already is.
-    @inlinable
+    
     func previousPowerOf2() -> Self {
         guard self != 0 else {
             return 0
@@ -158,7 +158,7 @@ extension FixedWidthInteger {
     /// - Parameters:
     ///   - buffer: The ByteBuffer to read from
     ///   - endianness: The endianness to use when reading the integer, defaults to the host system's endianness.
-    @inlinable
+    
     public init?(buffer: ByteBuffer, endianness: Endianness = .host) {
         var buffer = buffer
         guard let value = buffer.readInteger(endianness: endianness, as: Self.self), buffer.readableBytes == 0 else {
@@ -172,7 +172,7 @@ extension UInt32 {
     /// Returns the next power of two unless that would overflow, in which case UInt32.max (on 64-bit systems) or
     /// Int32.max (on 32-bit systems) is returned. The returned value is always safe to be cast to Int and passed
     /// to malloc on all platforms.
-    @inlinable
+    
     func nextPowerOf2ClampedToMax() -> UInt32 {
         guard self > 0 else {
             return 1

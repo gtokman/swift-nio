@@ -28,7 +28,7 @@ extension DispatchQueue {
     ///   - eventLoop: the `EventLoop` on which to processes the IO / task specified by `callbackMayBlock`.
     ///   - callbackMayBlock: The scheduled callback for the IO / task.
     /// - returns a new `EventLoopFuture<ReturnType>` with value returned by the `block` parameter.
-    @inlinable
+    
     @preconcurrency
     public func asyncWithFuture<NewValue: Sendable>(
         eventLoop: EventLoop,

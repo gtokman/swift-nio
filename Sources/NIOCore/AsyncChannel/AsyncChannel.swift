@@ -89,9 +89,9 @@ public struct NIOAsyncChannel<Inbound: Sendable, Outbound: Sendable>: Sendable {
         self._outbound
     }
 
-    @usableFromInline
+    
     let _inbound: NIOAsyncChannelInboundStream<Inbound>
-    @usableFromInline
+    
     let _outbound: NIOAsyncChannelOutboundWriter<Outbound>
 
     /// Initializes a new ``NIOAsyncChannel`` wrapping a ``Channel``.
@@ -102,7 +102,7 @@ public struct NIOAsyncChannel<Inbound: Sendable, Outbound: Sendable>: Sendable {
     /// - Parameters:
     ///   - channel: The ``Channel`` to wrap.
     ///   - configuration: The ``NIOAsyncChannel``s configuration.
-    @inlinable
+    
     public init(
         wrappingChannelSynchronously channel: Channel,
         configuration: Configuration = .init()
@@ -126,7 +126,7 @@ public struct NIOAsyncChannel<Inbound: Sendable, Outbound: Sendable>: Sendable {
     /// - Parameters:
     ///   - channel: The ``Channel`` to wrap.
     ///   - configuration: The ``NIOAsyncChannel``s configuration.
-    @inlinable
+    
     public init(
         wrappingChannelSynchronously channel: Channel,
         configuration: Configuration = .init()
@@ -156,7 +156,7 @@ public struct NIOAsyncChannel<Inbound: Sendable, Outbound: Sendable>: Sendable {
         renamed: "init(wrappingChannelSynchronously:configuration:)",
         message: "This method has been deprecated since it defaults to deinit based resource teardown"
     )
-    @inlinable
+    
     public init(
         synchronouslyWrapping channel: Channel,
         configuration: Configuration = .init()
@@ -180,7 +180,7 @@ public struct NIOAsyncChannel<Inbound: Sendable, Outbound: Sendable>: Sendable {
     /// - Parameters:
     ///   - channel: The ``Channel`` to wrap.
     ///   - configuration: The ``NIOAsyncChannel``s configuration.
-    @inlinable
+    
     @available(
         *,
         deprecated,
@@ -202,7 +202,7 @@ public struct NIOAsyncChannel<Inbound: Sendable, Outbound: Sendable>: Sendable {
         self._outbound.finish()
     }
 
-    @inlinable
+    
     internal init(
         channel: Channel,
         inboundStream: NIOAsyncChannelInboundStream<Inbound>,
@@ -218,7 +218,7 @@ public struct NIOAsyncChannel<Inbound: Sendable, Outbound: Sendable>: Sendable {
     /// at the right moment.
     ///
     /// - Important: This is not considered stable API and should not be used.
-    @inlinable
+    
     @available(
         *,
         deprecated,
@@ -253,7 +253,7 @@ public struct NIOAsyncChannel<Inbound: Sendable, Outbound: Sendable>: Sendable {
     /// at the right moment.
     ///
     /// - Important: This is not considered stable API and should not be used.
-    @inlinable
+    
     public static func _wrapAsyncChannelWithTransformations(
         wrappingChannelSynchronously channel: Channel,
         backPressureStrategy: NIOAsyncSequenceProducerBackPressureStrategies.HighLowWatermark? = nil,
@@ -471,7 +471,7 @@ extension NIOAsyncChannel {
 
 extension Channel {
     @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
-    @inlinable
+    
     func _syncAddAsyncHandlers<Inbound: Sendable, Outbound: Sendable>(
         backPressureStrategy: NIOAsyncSequenceProducerBackPressureStrategies.HighLowWatermark?,
         isOutboundHalfClosureEnabled: Bool,
@@ -504,7 +504,7 @@ extension Channel {
     }
 
     @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
-    @inlinable
+    
     func _syncAddAsyncHandlersWithTransformations<ChannelReadResult>(
         backPressureStrategy: NIOAsyncSequenceProducerBackPressureStrategies.HighLowWatermark?,
         isOutboundHalfClosureEnabled: Bool,

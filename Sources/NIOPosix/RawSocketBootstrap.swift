@@ -37,7 +37,7 @@ public final class NIORawSocketBootstrap {
 
     private let group: EventLoopGroup
     private var channelInitializer: Optional<ChannelInitializerCallback>
-    @usableFromInline
+    
     internal var _channelOptions: ChannelOptions.Storage
 
     /// Create a `RawSocketBootstrap` on the `EventLoopGroup` `group`.
@@ -87,7 +87,7 @@ public final class NIORawSocketBootstrap {
     /// - Parameters:
     ///   - option: The option to be applied.
     ///   - value: The value for the option.
-    @inlinable
+    
     public func channelOption<Option: ChannelOption>(_ option: Option, value: Option.Value) -> Self {
         self._channelOptions.append(key: option, value: value)
         return self

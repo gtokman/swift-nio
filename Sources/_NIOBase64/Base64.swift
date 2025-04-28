@@ -18,24 +18,24 @@
 extension String {
     /// Base64 encode a collection of UInt8 to a string, without the use of Foundation.
     @available(*, deprecated, message: "This API was unintentionally made public.")
-    @inlinable
+    
     public init<Buffer: Collection>(base64Encoding bytes: Buffer) where Buffer.Element == UInt8 {
         self.init(_base64Encoding: bytes)
     }
 
     @available(*, deprecated, message: "This API was unintentionally made public.")
-    @inlinable
+    
     public func base64Decoded() throws -> [UInt8] {
         try self._base64Decoded()
     }
 
     /// Base64 encode a collection of UInt8 to a string, without the use of Foundation.
-    @inlinable
+    
     public init<Buffer: Collection>(_base64Encoding bytes: Buffer) where Buffer.Element == UInt8 {
         self = Base64.encode(bytes: bytes)
     }
 
-    @inlinable
+    
     public func _base64Decoded() throws -> [UInt8] {
         try Base64.decode(string: self)
     }
@@ -46,10 +46,10 @@ public enum Base64Error: Error {
     case invalidCharacter
 }
 
-@usableFromInline
+
 internal enum Base64: Sendable {
 
-    @inlinable
+    
     static func encode<Buffer: Collection>(bytes: Buffer) -> String where Buffer.Element == UInt8 {
         guard !bytes.isEmpty else {
             return ""
@@ -85,7 +85,7 @@ internal enum Base64: Sendable {
         }
     }
 
-    @inlinable
+    
     static func decode(string: String) throws -> [UInt8] {
         guard string.count % 4 == 0 else {
             throw Base64Error.invalidLength
@@ -133,7 +133,7 @@ internal enum Base64: Sendable {
     // MARK: Internal
 
     // The base64 unicode table.
-    @usableFromInline
+    
     static let encodingTable: [UInt8] = [
         UInt8(ascii: "A"), UInt8(ascii: "B"), UInt8(ascii: "C"), UInt8(ascii: "D"),
         UInt8(ascii: "E"), UInt8(ascii: "F"), UInt8(ascii: "G"), UInt8(ascii: "H"),
@@ -153,16 +153,16 @@ internal enum Base64: Sendable {
         UInt8(ascii: "8"), UInt8(ascii: "9"), UInt8(ascii: "+"), UInt8(ascii: "/"),
     ]
 
-    @usableFromInline
+    
     static let encodePaddingCharacter: UInt8 = UInt8(ascii: "=")
 
-    @usableFromInline
+    
     static func encode(alphabet: [UInt8], firstByte: UInt8) -> UInt8 {
         let index = firstByte >> 2
         return alphabet[Int(index)]
     }
 
-    @usableFromInline
+    
     static func encode(alphabet: [UInt8], firstByte: UInt8, secondByte: UInt8?) -> UInt8 {
         var index = (firstByte & 0b00000011) << 4
         if let secondByte = secondByte {
@@ -171,7 +171,7 @@ internal enum Base64: Sendable {
         return alphabet[Int(index)]
     }
 
-    @usableFromInline
+    
     static func encode(alphabet: [UInt8], secondByte: UInt8?, thirdByte: UInt8?) -> UInt8 {
         guard let secondByte = secondByte else {
             // No second byte means we are just emitting padding.
@@ -184,7 +184,7 @@ internal enum Base64: Sendable {
         return alphabet[Int(index)]
     }
 
-    @usableFromInline
+    
     static func encode(alphabet: [UInt8], thirdByte: UInt8?) -> UInt8 {
         guard let thirdByte = thirdByte else {
             // No third byte means just padding.
@@ -199,7 +199,7 @@ extension String {
     /// This is a backport of a proposed String initializer that will allow writing directly into an uninitialized String's backing memory.
     ///
     /// As this API does not exist prior to 5.3 on Linux, or on older Apple platforms, we fake it out with a pointer and accept the extra copy.
-    @inlinable
+    
     init(
         backportUnsafeUninitializedCapacity capacity: Int,
         initializingUTF8With initializer: (_ buffer: UnsafeMutableBufferPointer<UInt8>) throws -> Int
@@ -227,7 +227,7 @@ extension String {
 // enhancement on Apple platforms.
 extension String {
 
-    @inlinable
+    
     init(
         customUnsafeUninitializedCapacity capacity: Int,
         initializingUTF8With initializer: (_ buffer: UnsafeMutableBufferPointer<UInt8>) throws -> Int

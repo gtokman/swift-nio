@@ -100,7 +100,7 @@ extension KQueueEventFilterSet {
 }
 
 extension SelectorRegistrationID {
-    @inlinable
+    
     init(kqueueUData: UnsafeMutableRawPointer?) {
         self = .init(rawValue: UInt32(truncatingIfNeeded: UInt(bitPattern: kqueueUData)))
     }
@@ -108,7 +108,7 @@ extension SelectorRegistrationID {
 
 // this is deliberately not thread-safe, only the wakeup() function may be called unprotectedly
 extension Selector: _SelectorBackendProtocol {
-    @inlinable
+    
     internal static func toKQueueTimeSpec(strategy: SelectorStrategy) -> timespec? {
         switch strategy {
         case .block:
@@ -252,7 +252,7 @@ extension Selector: _SelectorBackendProtocol {
     /// - Parameters:
     ///   - strategy: The `SelectorStrategy` to apply
     ///   - body: The function to execute for each `SelectorEvent` that was produced.
-    @inlinable
+    
     func whenReady0(
         strategy: SelectorStrategy,
         onLoopBegin loopStart: () -> Void,

@@ -12,11 +12,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-@usableFromInline
+
 enum _IntegerBitPacking {}
 
 extension _IntegerBitPacking {
-    @inlinable
+    
     static func packUU<
         Left: FixedWidthInteger & UnsignedInteger,
         Right: FixedWidthInteger & UnsignedInteger,
@@ -35,7 +35,7 @@ extension _IntegerBitPacking {
         return result
     }
 
-    @inlinable
+    
     static func unpackUU<
         Input: FixedWidthInteger & UnsignedInteger,
         Left: FixedWidthInteger & UnsignedInteger,
@@ -57,11 +57,11 @@ extension _IntegerBitPacking {
     }
 }
 
-@usableFromInline
+
 enum IntegerBitPacking {}
 
 extension IntegerBitPacking {
-    @inlinable
+    
     static func packUInt32UInt16UInt8(_ left: UInt32, _ middle: UInt16, _ right: UInt8) -> UInt64 {
         _IntegerBitPacking.packUU(
             _IntegerBitPacking.packUU(right, middle, type: UInt32.self),
@@ -69,39 +69,39 @@ extension IntegerBitPacking {
         )
     }
 
-    @inlinable
+    
     static func unpackUInt32UInt16UInt8(_ value: UInt64) -> (UInt32, UInt16, UInt8) {
         let leftRight = _IntegerBitPacking.unpackUU(value, leftType: UInt32.self, rightType: UInt32.self)
         let left = _IntegerBitPacking.unpackUU(leftRight.0, leftType: UInt8.self, rightType: UInt16.self)
         return (leftRight.1, left.1, left.0)
     }
 
-    @inlinable
+    
     static func packUInt8UInt8(_ left: UInt8, _ right: UInt8) -> UInt16 {
         _IntegerBitPacking.packUU(left, right)
     }
 
-    @inlinable
+    
     static func unpackUInt8UInt8(_ value: UInt16) -> (UInt8, UInt8) {
         _IntegerBitPacking.unpackUU(value)
     }
 
-    @inlinable
+    
     static func packUInt16UInt8(_ left: UInt16, _ right: UInt8) -> UInt32 {
         _IntegerBitPacking.packUU(left, right)
     }
 
-    @inlinable
+    
     static func unpackUInt16UInt8(_ value: UInt32) -> (UInt16, UInt8) {
         _IntegerBitPacking.unpackUU(value)
     }
 
-    @inlinable
+    
     static func packUInt32CInt(_ left: UInt32, _ right: CInt) -> UInt64 {
         _IntegerBitPacking.packUU(left, UInt32(truncatingIfNeeded: right))
     }
 
-    @inlinable
+    
     static func unpackUInt32CInt(_ value: UInt64) -> (UInt32, CInt) {
         let unpacked = _IntegerBitPacking.unpackUU(value, leftType: UInt32.self, rightType: UInt32.self)
         return (unpacked.0, CInt(truncatingIfNeeded: unpacked.1))

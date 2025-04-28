@@ -111,7 +111,7 @@ public struct NIOAsyncSequenceProducer<
         /// The actual sequence which should be passed to the consumer.
         public let sequence: NIOAsyncSequenceProducer
 
-        @usableFromInline
+        
         internal init(
             source: Source,
             sequence: NIOAsyncSequenceProducer
@@ -121,7 +121,7 @@ public struct NIOAsyncSequenceProducer<
         }
     }
 
-    @usableFromInline
+    
     internal let _throwingSequence:
         NIOThrowingAsyncSequenceProducer<
             Element,
@@ -144,7 +144,7 @@ public struct NIOAsyncSequenceProducer<
     ///   We do not recommend to rely on  deinit based resource tear down.
     ///   - delegate: The delegate of the sequence
     /// - Returns: A ``NIOAsyncSequenceProducer/Source`` and a ``NIOAsyncSequenceProducer``.
-    @inlinable
+    
     public static func makeSequence(
         elementType: Element.Type = Element.self,
         backPressureStrategy: Strategy,
@@ -175,7 +175,7 @@ public struct NIOAsyncSequenceProducer<
     ///   - backPressureStrategy: The back-pressure strategy of the sequence.
     ///   - delegate: The delegate of the sequence
     /// - Returns: A ``NIOAsyncSequenceProducer/Source`` and a ``NIOAsyncSequenceProducer``.
-    @inlinable
+    
     @available(
         *,
         deprecated,
@@ -199,7 +199,7 @@ public struct NIOAsyncSequenceProducer<
         return .init(source: Source(throwingSource: newSequence.source), sequence: sequence)
     }
 
-    @inlinable
+    
     internal init(
         throwingSequence: NIOThrowingAsyncSequenceProducer<Element, Never, Strategy, Delegate>
     ) {
@@ -217,7 +217,7 @@ extension NIOAsyncSequenceProducer: AsyncSequence {
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension NIOAsyncSequenceProducer {
     public struct AsyncIterator: AsyncIteratorProtocol {
-        @usableFromInline
+        
         internal let _throwingIterator:
             NIOThrowingAsyncSequenceProducer<
                 Element,
@@ -237,7 +237,7 @@ extension NIOAsyncSequenceProducer {
             self._throwingIterator = throwingIterator
         }
 
-        @inlinable
+        
         public func next() async -> Element? {
             // this call will only throw if cancelled and we want to just return nil in that case
             try? await self._throwingIterator.next()
@@ -251,7 +251,7 @@ extension NIOAsyncSequenceProducer {
     /// This type allows the producer to synchronously `yield` new elements to the ``NIOAsyncSequenceProducer``
     /// and to `finish` the sequence.
     public struct Source {
-        @usableFromInline
+        
         typealias ThrowingSource = NIOThrowingAsyncSequenceProducer<
             Element,
             Never,
@@ -259,10 +259,10 @@ extension NIOAsyncSequenceProducer {
             Delegate
         >.Source
 
-        @usableFromInline
+        
         internal var _throwingSource: ThrowingSource
 
-        @usableFromInline
+        
         internal init(throwingSource: ThrowingSource) {
             self._throwingSource = throwingSource
         }
@@ -293,7 +293,7 @@ extension NIOAsyncSequenceProducer {
         /// - Parameter sequence: The sequence to yield.
         /// - Returns: A ``NIOAsyncSequenceProducer/Source/YieldResult`` that indicates if the yield was successful
         /// and if more elements should be produced.
-        @inlinable
+        
         public func yield<S: Sequence>(contentsOf sequence: S) -> YieldResult where S.Element == Element {
             switch self._throwingSource.yield(contentsOf: sequence) {
             case .stopProducing:
@@ -319,7 +319,7 @@ extension NIOAsyncSequenceProducer {
         /// - Parameter element: The element to yield.
         /// - Returns: A ``NIOAsyncSequenceProducer/Source/YieldResult`` that indicates if the yield was successful
         /// and if more elements should be produced.
-        @inlinable
+        
         public func yield(_ element: Element) -> YieldResult {
             self.yield(contentsOf: CollectionOfOne(element))
         }
@@ -333,7 +333,7 @@ extension NIOAsyncSequenceProducer {
         /// Otherwise, the buffered elements will be dropped.
         ///
         /// - Note: Calling this function more than once has no effect.
-        @inlinable
+        
         public func finish() {
             self._throwingSource.finish()
         }

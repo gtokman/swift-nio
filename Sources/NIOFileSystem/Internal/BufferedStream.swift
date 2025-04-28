@@ -1435,7 +1435,7 @@ extension BufferedStream {
             )
         }
 
-        @inlinable
+        
         mutating func finish(_ failure: Error?) -> FinishAction? {
             switch self._state {
             case .initial(let initial):

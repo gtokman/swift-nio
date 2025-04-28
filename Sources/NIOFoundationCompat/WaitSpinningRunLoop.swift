@@ -34,7 +34,7 @@ extension EventLoopFuture {
     /// - Returns: The value of the `EventLoopFuture` when it completes.
     /// - Throws: The error value of the `EventLoopFuture` if it errors.
     @available(*, noasync, message: "waitSpinningRunLoop() can block indefinitely, prefer get()", renamed: "get()")
-    @inlinable
+    
     public func waitSpinningRunLoop(
         inMode mode: RunLoop.Mode = .default,
         file: StaticString = #file,
@@ -43,7 +43,7 @@ extension EventLoopFuture {
         try self._blockingWaitForFutureCompletion(mode: mode, file: file, line: line)
     }
 
-    @inlinable
+    
     @inline(never)
     func _blockingWaitForFutureCompletion(
         mode: RunLoop.Mode,

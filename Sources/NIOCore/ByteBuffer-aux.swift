@@ -29,7 +29,7 @@ extension ByteBuffer {
     ///   - index: The starting index of the bytes of interest into the `ByteBuffer`.
     ///   - length: The number of bytes of interest.
     /// - Returns: A `[UInt8]` value containing the bytes of interest or `nil` if the bytes `ByteBuffer` are not readable.
-    @inlinable
+    
     public func getBytes(at index: Int, length: Int) -> [UInt8]? {
         guard let range = self.rangeWithinReadableBytes(index: index, length: length) else {
             return nil
@@ -49,7 +49,7 @@ extension ByteBuffer {
     /// - Parameters:
     ///   - length: The number of bytes to be read from this `ByteBuffer`.
     /// - Returns: A `[UInt8]` value containing `length` bytes or `nil` if there aren't at least `length` bytes readable.
-    @inlinable
+    
     public mutating func readBytes(length: Int) -> [UInt8]? {
         guard let result = self.getBytes(at: self.readerIndex, length: length) else {
             return nil
@@ -65,7 +65,7 @@ extension ByteBuffer {
     /// - Parameters:
     ///   - length: The number of bytes of interest.
     /// - Returns: A `[UInt8]` value containing the bytes of interest or `nil` if the bytes `ByteBuffer` are not readable.
-    @inlinable
+    
     public func peekBytes(length: Int) -> [UInt8]? {
         self.getBytes(at: self.readerIndex, length: length)
     }
@@ -78,7 +78,7 @@ extension ByteBuffer {
     ///   - string: The string to write.
     /// - Returns: The number of bytes written.
     @discardableResult
-    @inlinable
+    
     public mutating func writeStaticString(_ string: StaticString) -> Int {
         let written = self.setStaticString(string, at: self.writerIndex)
         self._moveWriterIndex(forwardBy: written)
@@ -91,7 +91,7 @@ extension ByteBuffer {
     ///   - string: The string to write.
     ///   - index: The index for the first serialized byte.
     /// - Returns: The number of bytes written.
-    @inlinable
+    
     public mutating func setStaticString(_ string: StaticString, at index: Int) -> Int {
         // please do not replace the code below with code that uses `string.withUTF8Buffer { ... }` (see SR-7541)
         self.setBytes(
@@ -111,7 +111,7 @@ extension ByteBuffer {
     ///     This format is compatible with `xxd` CLI utility.
     /// - Returns: The number of bytes written.
     @discardableResult
-    @inlinable
+    
     public mutating func writePlainHexEncodedBytes(_ plainHexEncodedBytes: String) throws -> Int {
         var slice = plainHexEncodedBytes.utf8[...]
         let initialWriterIndex = self.writerIndex
@@ -134,7 +134,7 @@ extension ByteBuffer {
     ///   - string: The string to write.
     /// - Returns: The number of bytes written.
     @discardableResult
-    @inlinable
+    
     public mutating func writeString(_ string: String) -> Int {
         let written = self.setString(string, at: self.writerIndex)
         self._moveWriterIndex(forwardBy: written)
@@ -147,7 +147,7 @@ extension ByteBuffer {
     ///   - string: The string to write.
     /// - Returns: The number of bytes written.
     @discardableResult
-    @inlinable
+    
     public mutating func writeNullTerminatedString(_ string: String) -> Int {
         let written = self.setNullTerminatedString(string, at: self.writerIndex)
         self._moveWriterIndex(forwardBy: written)
@@ -155,7 +155,7 @@ extension ByteBuffer {
     }
 
     @inline(never)
-    @inlinable
+    
     mutating func _setStringSlowpath(_ string: String, at index: Int) -> Int {
         // slow path, let's try to force the string to be native
         if let written = (string + "").utf8.withContiguousStorageIfAvailable({ utf8Bytes in
@@ -174,7 +174,7 @@ extension ByteBuffer {
     ///   - index: The index for the first serialized byte.
     /// - Returns: The number of bytes written.
     @discardableResult
-    @inlinable
+    
     public mutating func setString(_ string: String, at index: Int) -> Int {
         // Do not implement setString via setSubstring. Before Swift version 5.3,
         // Substring.UTF8View did not implement withContiguousStorageIfAvailable
@@ -195,7 +195,7 @@ extension ByteBuffer {
     ///   - string: The string to write.
     ///   - index: The index for the first serialized byte.
     /// - Returns: The number of bytes written.
-    @inlinable
+    
     public mutating func setNullTerminatedString(_ string: String, at index: Int) -> Int {
         let length = self.setString(string, at: index)
         self.setInteger(UInt8(0), at: index &+ length)
@@ -210,7 +210,7 @@ extension ByteBuffer {
     ///   - length: The number of bytes making up the string.
     /// - Returns: A `String` value containing the UTF-8 decoded selected bytes from this `ByteBuffer` or `nil` if
     ///            the requested bytes are not readable.
-    @inlinable
+    
     public func getString(at index: Int, length: Int) -> String? {
         guard let range = self.rangeWithinReadableBytes(index: index, length: length) else {
             return nil
@@ -231,7 +231,7 @@ extension ByteBuffer {
     ///   - index: The starting index into `ByteBuffer` containing the null terminated string of interest.
     /// - Returns: A `String` value deserialized from this `ByteBuffer` or `nil` if there isn't a complete null-terminated string,
     ///            including null-terminator, in the readable bytes after `index` in the buffer
-    @inlinable
+    
     public func getNullTerminatedString(at index: Int) -> String? {
         guard let stringLength = self._getNullTerminatedStringLength(at: index) else {
             return nil
@@ -239,7 +239,7 @@ extension ByteBuffer {
         return self.getString(at: index, length: stringLength)
     }
 
-    @inlinable
+    
     func _getNullTerminatedStringLength(at index: Int) -> Int? {
         guard self.readerIndex <= index && index < self.writerIndex else {
             return nil
@@ -255,7 +255,7 @@ extension ByteBuffer {
     /// - Parameters:
     ///   - length: The number of bytes making up the string.
     /// - Returns: A `String` value deserialized from this `ByteBuffer` or `nil` if there aren't at least `length` bytes readable.
-    @inlinable
+    
     public mutating func readString(length: Int) -> String? {
         guard let result = self.getString(at: self.readerIndex, length: length) else {
             return nil
@@ -269,7 +269,7 @@ extension ByteBuffer {
     ///
     /// - Returns: A `String` value deserialized from this `ByteBuffer` or `nil` if there isn't a complete null-terminated string,
     ///            including null-terminator, in the readable bytes of the buffer
-    @inlinable
+    
     public mutating func readNullTerminatedString() -> String? {
         guard let stringLength = self._getNullTerminatedStringLength(at: self.readerIndex) else {
             return nil
@@ -286,7 +286,7 @@ extension ByteBuffer {
     ///   - substring: The substring to write.
     /// - Returns: The number of bytes written.
     @discardableResult
-    @inlinable
+    
     public mutating func writeSubstring(_ substring: Substring) -> Int {
         let written = self.setSubstring(substring, at: self.writerIndex)
         self._moveWriterIndex(forwardBy: written)
@@ -300,7 +300,7 @@ extension ByteBuffer {
     ///   - index: The index for the first serialized byte.
     /// - Returns: The number of bytes written
     @discardableResult
-    @inlinable
+    
     public mutating func setSubstring(_ substring: Substring, at index: Int) -> Int {
         // Substring.UTF8View implements withContiguousStorageIfAvailable starting with
         // Swift version 5.3.
@@ -321,7 +321,7 @@ extension ByteBuffer {
     ///
     /// - Parameter length: The number of bytes making up the string.
     /// - Returns: A String containing the decoded bytes, or `nil` if the requested bytes are not readable.
-    @inlinable
+    
     public func peekString(length: Int) -> String? {
         self.getString(at: self.readerIndex, length: length)
     }
@@ -331,7 +331,7 @@ extension ByteBuffer {
     /// This is equivalent to calling `getNullTerminatedString(at: readerIndex)` and does not advance the reader index.
     ///
     /// - Returns: A String decoded from the null-terminated bytes, or `nil` if a complete null-terminated string is not available.
-    @inlinable
+    
     public func peekNullTerminatedString() -> String? {
         self.getNullTerminatedString(at: self.readerIndex)
     }
@@ -344,7 +344,7 @@ extension ByteBuffer {
     ///   - dispatchData: The `DispatchData` instance to write to the `ByteBuffer`.
     /// - Returns: The number of bytes written.
     @discardableResult
-    @inlinable
+    
     public mutating func writeDispatchData(_ dispatchData: DispatchData) -> Int {
         let written = self.setDispatchData(dispatchData, at: self.writerIndex)
         self._moveWriterIndex(forwardBy: written)
@@ -358,7 +358,7 @@ extension ByteBuffer {
     ///   - index: The index for the first serialized byte.
     /// - Returns: The number of bytes written.
     @discardableResult
-    @inlinable
+    
     public mutating func setDispatchData(_ dispatchData: DispatchData, at index: Int) -> Int {
         let allBytesCount = dispatchData.count
         self.reserveCapacity(index + allBytesCount)
@@ -378,7 +378,7 @@ extension ByteBuffer {
     ///   - length: The number of bytes.
     /// - Returns: A `DispatchData` value deserialized from this `ByteBuffer` or `nil` if the requested bytes
     ///            are not readable.
-    @inlinable
+    
     public func getDispatchData(at index: Int, length: Int) -> DispatchData? {
         guard let range = self.rangeWithinReadableBytes(index: index, length: length) else {
             return nil
@@ -393,7 +393,7 @@ extension ByteBuffer {
     /// - Parameters:
     ///   - length: The number of bytes.
     /// - Returns: A `DispatchData` value containing the bytes from this `ByteBuffer` or `nil` if there aren't at least `length` bytes readable.
-    @inlinable
+    
     public mutating func readDispatchData(length: Int) -> DispatchData? {
         guard let result = self.getDispatchData(at: self.readerIndex, length: length) else {
             return nil
@@ -408,7 +408,7 @@ extension ByteBuffer {
     ///
     /// - Parameter length: The number of bytes to be retrieved.
     /// - Returns: A DispatchData object, or `nil` if the requested bytes are not readable.
-    @inlinable
+    
     public func peekDispatchData(length: Int) -> DispatchData? {
         self.getDispatchData(at: self.readerIndex, length: length)
     }
@@ -425,7 +425,7 @@ extension ByteBuffer {
     ///   - body: The closure that will accept the yielded bytes and returns the number of bytes it processed.
     /// - Returns: The number of bytes read.
     @discardableResult
-    @inlinable
+    
     public mutating func readWithUnsafeReadableBytes(_ body: (UnsafeRawBufferPointer) throws -> Int) rethrows -> Int {
         let bytesRead = try self.withUnsafeReadableBytes({ try body($0) })
         self._moveReaderIndex(forwardBy: bytesRead)
@@ -441,7 +441,7 @@ extension ByteBuffer {
     ///   - body: The closure that will accept the yielded bytes and returns the number of bytes it processed.
     /// - Returns: The number of bytes read.
     @discardableResult
-    @inlinable
+    
     public mutating func readWithUnsafeMutableReadableBytes(
         _ body: (UnsafeMutableRawBufferPointer) throws -> Int
     ) rethrows -> Int {
@@ -469,7 +469,7 @@ extension ByteBuffer {
     ///   - index: The index for the first byte.
     /// - Returns: The number of bytes written.
     @discardableResult
-    @inlinable
+    
     public mutating func setBuffer(_ buffer: ByteBuffer, at index: Int) -> Int {
         buffer.withUnsafeReadableBytes { p in
             self.setBytes(p, at: index)
@@ -483,7 +483,7 @@ extension ByteBuffer {
     ///   - buffer: The `ByteBuffer` to write.
     /// - Returns: The number of bytes written to this `ByteBuffer` which is equal to the number of bytes read from `buffer`.
     @discardableResult
-    @inlinable
+    
     public mutating func writeBuffer(_ buffer: inout ByteBuffer) -> Int {
         let written = self.setBuffer(buffer, at: writerIndex)
         self._moveWriterIndex(forwardBy: written)
@@ -497,7 +497,7 @@ extension ByteBuffer {
     ///   - bytes: A `Collection` of `UInt8` to be written.
     /// - Returns: The number of bytes written or `bytes.count`.
     @discardableResult
-    @inlinable
+    
     public mutating func writeBytes<Bytes: Sequence>(_ bytes: Bytes) -> Int where Bytes.Element == UInt8 {
         let written = self.setBytes(bytes, at: self.writerIndex)
         self._moveWriterIndex(forwardBy: written)
@@ -510,7 +510,7 @@ extension ByteBuffer {
     ///   - bytes: An `UnsafeRawBufferPointer`
     /// - Returns: The number of bytes written or `bytes.count`.
     @discardableResult
-    @inlinable
+    
     public mutating func writeBytes(_ bytes: UnsafeRawBufferPointer) -> Int {
         let written = self.setBytes(bytes, at: self.writerIndex)
         self._moveWriterIndex(forwardBy: written)
@@ -524,7 +524,7 @@ extension ByteBuffer {
     ///   - count: How many times to repeat the given `byte`
     /// - Returns: How many bytes were written.
     @discardableResult
-    @inlinable
+    
     public mutating func writeRepeatingByte(_ byte: UInt8, count: Int) -> Int {
         let written = self.setRepeatingByte(byte, count: count, at: self.writerIndex)
         self._moveWriterIndex(forwardBy: written)
@@ -539,7 +539,7 @@ extension ByteBuffer {
     ///   - index: The starting index of the bytes into the `ByteBuffer`.
     /// - Returns: How many bytes were written.
     @discardableResult
-    @inlinable
+    
     public mutating func setRepeatingByte(_ byte: UInt8, count: Int, at index: Int) -> Int {
         precondition(count >= 0, "Can't write fewer than 0 bytes")
         self.reserveCapacity(index + count)
@@ -557,7 +557,7 @@ extension ByteBuffer {
     /// - Note: Because `ByteBuffer` implements copy-on-write a copy of the storage will be automatically triggered when either of the `ByteBuffer`s sharing storage is written to.
     ///
     /// - Returns: A `ByteBuffer` sharing storage containing the readable bytes only.
-    @inlinable
+    
     public func slice() -> ByteBuffer {
         // must work, bytes definitely in the buffer// must work, bytes definitely in the buffer
         self.getSlice(at: self.readerIndex, length: self.readableBytes)!
@@ -575,7 +575,7 @@ extension ByteBuffer {
     /// - Parameters:
     ///   - length: The number of bytes to slice off.
     /// - Returns: A `ByteBuffer` sharing storage containing `length` bytes or `nil` if the not enough bytes were readable.
-    @inlinable
+    
     public mutating func readSlice(length: Int) -> ByteBuffer? {
         guard let result = self.getSlice_inlineAlways(at: self.readerIndex, length: length) else {
             return nil
@@ -585,7 +585,7 @@ extension ByteBuffer {
     }
 
     @discardableResult
-    @inlinable
+    
     public mutating func writeImmutableBuffer(_ buffer: ByteBuffer) -> Int {
         var mutable = buffer
         return self.writeBuffer(&mutable)
@@ -602,7 +602,7 @@ extension ByteBuffer {
     /// - Parameters:
     ///   - body: The closure that will accept the yielded bytes and returns the number of bytes it processed along with some other value.
     /// - Returns: The value `body` returned in the second tuple component.
-    @inlinable
+    
     public mutating func readWithUnsafeMutableReadableBytes<T>(
         _ body: (UnsafeMutableRawBufferPointer) throws -> (Int, T)
     ) rethrows -> T {
@@ -619,7 +619,7 @@ extension ByteBuffer {
     /// - Parameters:
     ///   - body: The closure that will accept the yielded bytes and returns the number of bytes it processed along with some other value.
     /// - Returns: The value `body` returned in the second tuple component.
-    @inlinable
+    
     public mutating func readWithUnsafeReadableBytes<T>(
         _ body: (UnsafeRawBufferPointer) throws -> (Int, T)
     ) rethrows -> T {
@@ -639,7 +639,7 @@ extension ByteBuffer {
     /// - info: If you have access to a `Channel`, `ChannelHandlerContext`, or `ByteBufferAllocator` it is
     ///         recommended using `channel.allocator.buffer(capacity: 0)`. This allows SwiftNIO to do
     ///         accounting and optimisations of resources acquired for operations on a given `Channel` in the future.
-    @inlinable
+    
     public init() {
         self = ByteBufferAllocator.zeroCapacityWithDefaultAllocator
     }
@@ -654,7 +654,7 @@ extension ByteBuffer {
     ///         buffer use `channel.allocator.buffer(capacity: ...)` to allocate a `ByteBuffer` of the right
     ///         size followed by a `writeString` instead of using this method. This allows SwiftNIO to do
     ///         accounting and optimisations of resources acquired for operations on a given `Channel` in the future.
-    @inlinable
+    
     public init(string: String) {
         self = ByteBufferAllocator().buffer(string: string)
     }
@@ -669,7 +669,7 @@ extension ByteBuffer {
     ///         the buffer use `channel.allocator.buffer(capacity: ...)` to allocate a `ByteBuffer` of the right
     ///         size followed by a `writeSubstring` instead of using this method. This allows SwiftNIO to do
     ///         accounting and optimisations of resources acquired for operations on a given `Channel` in the future.
-    @inlinable
+    
     public init(substring string: Substring) {
         self = ByteBufferAllocator().buffer(substring: string)
     }
@@ -684,7 +684,7 @@ extension ByteBuffer {
     ///         the buffer use `channel.allocator.buffer(capacity: ...)` to allocate a `ByteBuffer` of the right
     ///         size followed by a `writeStaticString` instead of using this method. This allows SwiftNIO to do
     ///         accounting and optimisations of resources acquired for operations on a given `Channel` in the future.
-    @inlinable
+    
     public init(staticString string: StaticString) {
         self = ByteBufferAllocator().buffer(staticString: string)
     }
@@ -699,7 +699,7 @@ extension ByteBuffer {
     ///         buffer use `channel.allocator.buffer(capacity: ...)` to allocate a `ByteBuffer` of the right
     ///         size followed by a `writeBytes` instead of using this method. This allows SwiftNIO to do
     ///         accounting and optimisations of resources acquired for operations on a given `Channel` in the future.
-    @inlinable
+    
     public init<Bytes: Sequence>(bytes: Bytes) where Bytes.Element == UInt8 {
         self = ByteBufferAllocator().buffer(bytes: bytes)
     }
@@ -715,7 +715,7 @@ extension ByteBuffer {
     ///         buffer use `channel.allocator.buffer(capacity: ...)` to allocate a `ByteBuffer` of the right
     ///         size followed by a `writeInteger` instead of using this method. This allows SwiftNIO to do
     ///         accounting and optimisations of resources acquired for operations on a given `Channel` in the future.
-    @inlinable
+    
     public init<I: FixedWidthInteger>(integer: I, endianness: Endianness = .big, as: I.Type = I.self) {
         self = ByteBufferAllocator().buffer(integer: integer, endianness: endianness, as: `as`)
     }
@@ -729,7 +729,7 @@ extension ByteBuffer {
     ///         into the buffer use `channel.allocator.buffer(capacity: ...)` to allocate a `ByteBuffer` of the right
     ///         size followed by a `writeRepeatingByte` instead of using this method. This allows SwiftNIO to do
     ///         accounting and optimisations of resources acquired for operations on a given `Channel` in the future.
-    @inlinable
+    
     public init(repeating byte: UInt8, count: Int) {
         self = ByteBufferAllocator().buffer(repeating: byte, count: count)
     }
@@ -748,7 +748,7 @@ extension ByteBuffer {
     ///         buffer use `channel.allocator.buffer(capacity: ...)` to allocate a `ByteBuffer` of the right
     ///         size followed by a `writeImmutableBuffer` instead of using this method. This allows SwiftNIO to do
     ///         accounting and optimisations of resources acquired for operations on a given `Channel` in the future.
-    @inlinable
+    
     public init(buffer: ByteBuffer) {
         self = ByteBufferAllocator().buffer(buffer: buffer)
     }
@@ -764,7 +764,7 @@ extension ByteBuffer {
     ///         the buffer use `channel.allocator.buffer(capacity: ...)` to allocate a `ByteBuffer` of the right
     ///         size followed by a `writeDispatchData` instead of using this method. This allows SwiftNIO to do
     ///         accounting and optimisations of resources acquired for operations on a given `Channel` in the future.
-    @inlinable
+    
     public init(dispatchData: DispatchData) {
         self = ByteBufferAllocator().buffer(dispatchData: dispatchData)
     }
@@ -794,7 +794,7 @@ extension ByteBufferAllocator {
     /// This will allocate a new `ByteBuffer` with enough space to fit `string` and potentially some extra space.
     ///
     /// - Returns: The `ByteBuffer` containing the written bytes.
-    @inlinable
+    
     public func buffer(string: String) -> ByteBuffer {
         var buffer = self.buffer(capacity: string.utf8.count)
         buffer.writeString(string)
@@ -806,7 +806,7 @@ extension ByteBufferAllocator {
     /// This will allocate a new `ByteBuffer` with enough space to fit `string` and potentially some extra space.
     ///
     /// - Returns: The `ByteBuffer` containing the written bytes.
-    @inlinable
+    
     public func buffer(substring string: Substring) -> ByteBuffer {
         var buffer = self.buffer(capacity: string.utf8.count)
         buffer.writeSubstring(string)
@@ -818,7 +818,7 @@ extension ByteBufferAllocator {
     /// This will allocate a new `ByteBuffer` with enough space to fit `string` and potentially some extra space.
     ///
     /// - Returns: The `ByteBuffer` containing the written bytes.
-    @inlinable
+    
     public func buffer(staticString string: StaticString) -> ByteBuffer {
         var buffer = self.buffer(capacity: string.utf8CodeUnitCount)
         buffer.writeStaticString(string)
@@ -830,7 +830,7 @@ extension ByteBufferAllocator {
     /// This will allocate a new `ByteBuffer` with enough space to fit `bytes` and potentially some extra space.
     ///
     /// - Returns: The `ByteBuffer` containing the written bytes.
-    @inlinable
+    
     public func buffer<Bytes: Sequence>(bytes: Bytes) -> ByteBuffer where Bytes.Element == UInt8 {
         var buffer = self.buffer(capacity: bytes.underestimatedCount)
         buffer.writeBytes(bytes)
@@ -842,7 +842,7 @@ extension ByteBufferAllocator {
     /// This will allocate a new `ByteBuffer` with enough space to fit `bytes` and potentially some extra space.
     ///
     /// - Returns: The `ByteBuffer` containing the written bytes.
-    @inlinable
+    
     public func buffer(plainHexEncodedBytes string: String) throws -> ByteBuffer {
         var buffer = self.buffer(capacity: string.utf8.count / 2)
         try buffer.writePlainHexEncodedBytes(string)
@@ -855,7 +855,7 @@ extension ByteBufferAllocator {
     /// This will allocate a new `ByteBuffer` with enough space to fit `integer` and potentially some extra space.
     ///
     /// - Returns: The `ByteBuffer` containing the written bytes.
-    @inlinable
+    
     public func buffer<I: FixedWidthInteger>(
         integer: I,
         endianness: Endianness = .big,
@@ -871,7 +871,7 @@ extension ByteBufferAllocator {
     /// This will allocate a new `ByteBuffer` with at least `count` bytes.
     ///
     /// - Returns: The `ByteBuffer` containing the written bytes.
-    @inlinable
+    
     public func buffer(repeating byte: UInt8, count: Int) -> ByteBuffer {
         var buffer = self.buffer(capacity: count)
         buffer.writeRepeatingByte(byte, count: count)
@@ -887,7 +887,7 @@ extension ByteBufferAllocator {
     ///         you have a `ByteBuffer` but would like the `readerIndex` to start at `0`, consider `readSlice` instead.
     ///
     /// - Returns: The `ByteBuffer` containing the written bytes.
-    @inlinable
+    
     public func buffer(buffer: ByteBuffer) -> ByteBuffer {
         var newBuffer = self.buffer(capacity: buffer.readableBytes)
         newBuffer.writeImmutableBuffer(buffer)
@@ -901,7 +901,7 @@ extension ByteBufferAllocator {
     /// some extra space.
     ///
     /// - Returns: The `ByteBuffer` containing the written bytes.
-    @inlinable
+    
     public func buffer(dispatchData: DispatchData) -> ByteBuffer {
         var buffer = self.buffer(capacity: dispatchData.count)
         buffer.writeDispatchData(dispatchData)
@@ -921,7 +921,7 @@ extension Optional where Wrapped == ByteBuffer {
     /// - Returns: The number of bytes written to this `ByteBuffer` which is equal to the number of `readableBytes` in
     ///            `buffer`.
     @discardableResult
-    @inlinable
+    
     public mutating func setOrWriteImmutableBuffer(_ buffer: ByteBuffer) -> Int {
         var mutable = buffer
         return self.setOrWriteBuffer(&mutable)
@@ -937,7 +937,7 @@ extension Optional where Wrapped == ByteBuffer {
     ///   - buffer: The `ByteBuffer` to write.
     /// - Returns: The number of bytes written to this `ByteBuffer` which is equal to the number of bytes read from `buffer`.
     @discardableResult
-    @inlinable
+    
     public mutating func setOrWriteBuffer(_ buffer: inout ByteBuffer) -> Int {
         if self == nil {
             let readableBytes = buffer.readableBytes
@@ -963,7 +963,7 @@ extension ByteBuffer {
     ///   - length: The number of bytes making up the string.
     /// - Returns: A `String` value containing the UTF-8 decoded selected bytes from this `ByteBuffer` or `nil` if
     ///            the requested bytes are not readable.
-    @inlinable
+    
     @available(macOS 15, iOS 18, tvOS 18, watchOS 11, *)
     public func getUTF8ValidatedString(at index: Int, length: Int) throws -> String? {
         guard let slice = self.getSlice(at: index, length: length) else {
@@ -989,7 +989,7 @@ extension ByteBuffer {
     /// - Parameters:
     ///   - length: The number of bytes making up the string.
     /// - Returns: A `String` value deserialized from this `ByteBuffer` or `nil` if there aren't at least `length` bytes readable.
-    @inlinable
+    
     @available(macOS 15, iOS 18, tvOS 18, watchOS 11, *)
     public mutating func readUTF8ValidatedString(length: Int) throws -> String? {
         guard let result = try self.getUTF8ValidatedString(at: self.readerIndex, length: length) else {
@@ -1018,7 +1018,7 @@ extension ByteBuffer {
     /// - Parameter length: The number of bytes making up the string.
     /// - Returns: A validated String, or `nil` if the requested bytes are not readable.
     /// - Throws: `ReadUTF8ValidationError.invalidUTF8` if the bytes are not valid UTF8.
-    @inlinable
+    
     @available(macOS 15, iOS 18, tvOS 18, watchOS 11, *)
     public func peekUTF8ValidatedString(length: Int) throws -> String? {
         try self.getUTF8ValidatedString(at: self.readerIndex, length: length)
